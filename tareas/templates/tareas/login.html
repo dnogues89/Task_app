@@ -1,15 +1,16 @@
 {% extends 'tareas/base.html' %}
 {% block content %}
 
+<div class="header-bar">
+    <h1>Login</h1>
+</div>
 
-<h1>Login</h1>
-
-<form method="POST">
-    {% csrf_token %}
-    {{form.as_p}}
-    <input type="submit" value="Login">
-</form>
-
-<p>No estas registrado? <a href="{% url 'registrarse' %}">Registrarse</a></p>
-
+<div class="card-body">
+    <form method="POST">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input class="button" type="submit" value="Login">
+    </form>
+    <p>No estas registrado? <a href="{% url 'registrarse' %}">Registrarse</a></p>
+</div>
 {% endblock content %}

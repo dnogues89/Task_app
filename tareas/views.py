@@ -13,7 +13,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 
-from .models import Tareas, Preventa
+from .models import Tareas, Preventa, TareasForm
 
 from .asignacion_tareas import crear_tareas_usuario
 
@@ -59,6 +59,7 @@ class ListaTareas(LoginRequiredMixin, ListView):
     
 class ListaTareasPreventa(LoginRequiredMixin, ListView):
     model = Tareas    
+    
     template_name = 'tareas/tareas_list.html'
     context_object_name = "tareas"
     
@@ -82,7 +83,7 @@ class CrearTarea(LoginRequiredMixin, CreateView):
     
 class ActualizarTarea(LoginRequiredMixin, UpdateView):
     model = Tareas
-    fields = ['titulo','descripcion','adjunto','completo']
+    form_class = TareasForm
     success_url = reverse_lazy('tareas')
     
 class EliminarTarea(LoginRequiredMixin, DeleteView):

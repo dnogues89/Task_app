@@ -1,4 +1,5 @@
 from .models import Tareas
+from django.utils.safestring import mark_safe
 
     # user = models.ForeignKey(User, on_delete=models.SET_NULL,null=True,blank=True)
     # titulo = models.CharField(max_length=200)
@@ -10,7 +11,7 @@ from .models import Tareas
 
 
 def crear_tareas_usuario(usuario):
-    tarea = Tareas.objects.create(user = usuario, titulo = 'DNI Frente',descripcion='Foto frente dni del que firmo el boleto')
+    tarea = Tareas.objects.create(user = usuario, titulo = 'DNI Frente',descripcion='Foto frente dni del que firmo el boleto <a href="https://google.com.ar">LINK</a>')
     tarea.save()
     tarea = Tareas.objects.create(user = usuario, titulo = 'DNI Dorso',descripcion='Foto dorso dni del que firmo el boleto')
     tarea.save()

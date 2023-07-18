@@ -1,4 +1,5 @@
 from django.db import models
+from django import forms
 from django.contrib.auth.models import User
 
 # Create your models here.
@@ -30,6 +31,19 @@ class Tareas(models.Model):
     
     class Meta:
         ordering = ['completo']
+    
+class TareasForm(forms.ModelForm):
+    user = forms.ModelChoiceField(queryset=User.objects.all(), disabled=True)
+    titulo = forms.CharField(disabled=True)
+    descripcion = forms.CharField(widget=forms.Textarea(attrs={'readonly': 'readonly'}))
+    adjunto = forms.FileField(required=False)
+    completo = forms.BooleanField(required=False)
+    creado = forms.DateField(disabled=True)
+    pv = forms.ModelChoiceField(queryset=Preventa.objects.all(), disabled=True)
+    
+    class Meta:
+        model = Tareas
+        fields = ['user', 'titulo', 'descripcion', 'adjunto', 'completo', 'pv']
         
 
         
