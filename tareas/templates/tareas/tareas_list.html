@@ -44,16 +44,19 @@
 
                 </div>           
                 <a class="delete-link" href="{% url 'eliminar-tarea' tarea.id %}">&#215;</a>
-            {% endif %}
             
+                {% endif %}
+
+
+
                 
 
 
         </div>
+        {% empty %}
+        <h3>Sin tareas pendientes</h3>
+        {% endfor %}
 
-    {% empty %}
-    <h3>No hay tareas</h3>
-    {% endfor %}
 </div>
 
 {% endblock content%}
