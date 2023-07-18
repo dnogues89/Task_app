@@ -1,0 +1,46 @@
+{% extends 'tareas/base.html' %}
+{% block content %}
+
+<div class="header-bar">
+    <div>
+        <div >
+            <h1>Hola {{request.user|title}}</h1>
+            <a href="{% url 'preventas' %}"><h3 style="margin-right: 20px; display: flex;">Preventas </h3></a> 
+            <h3 style="margin:0"> Tenes {{cantidad}} preventa{{cantidad|pluralize:"s" }} activa{{cantidad|pluralize:"s" }}</h3> 
+
+        </div>
+    </div>
+
+    {% if request.user.is_authenticated %}
+    <a href="{% url 'logout' %}">Desconectarse</a>
+    {% else %}
+    <a href="{% url 'login' %}">Conectarse</a>
+    {% endif %}
+
+</div>
+
+
+<!-- <a href="{% url 'crear-tarea' %}">Crear Tarea</a>
+<a href="{% url 'crear-preventa' %}">Crear Preventa</a>
+
+<form method="GET">
+    <input type="text" name="search-area" value="{{search_input}}">
+    <input type="submit" value="Buscar">
+</form> -->
+
+<div class="task-items-wraper">
+    {% for preventa in preventas %}
+        <div class="task-wraper">
+                <div class="task-title">
+                    <div class="task-incomplete-icon"></div>
+                    <a href="{% url 'lista-preventas' pk=preventa.id %}">{{preventa.preventa}}</a>
+
+                </div>           
+        </div>
+
+    {% empty %}
+    <h3>No tenes preventas activas</h3>
+    {% endfor %}
+</div>
+
+{% endblock content%}

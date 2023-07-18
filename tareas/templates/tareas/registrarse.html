@@ -1,0 +1,14 @@
+{% extends 'tareas/base.html' %}
+{% block content %}
+
+<h1>Registrarse</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    {{form.as_p}}
+    <input type="submit" value="Registrarse">
+</form>
+
+<p>Ya tenes cuenta?<a href="{% url 'login' %}">Login</a></p>
+
+{% endblock content %}

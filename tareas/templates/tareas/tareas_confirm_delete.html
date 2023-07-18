@@ -1,0 +1,11 @@
+{% extends 'tareas/base.html' %}
+{% block content %}
+
+<a href="{% url 'tareas' %}">Atras</a>
+<form method="POST">
+    {%csrf_token%}
+    <p>Seguro que deseas borrar la tarea? "{{tarea}}"</p>
+    <input type="submit" value="Delete"/>
+</form>
+
+{% endblock content %}
