@@ -1,4 +1,5 @@
 from typing import Any, Dict, Type
+
 from django.db.models.query import QuerySet
 from django.forms.models import BaseModelForm
 from django.http import HttpRequest, HttpResponse
@@ -15,7 +16,7 @@ from django.contrib.auth import login
 
 from .models import Tareas, Preventa, TareasForm
 
-from .asignacion_tareas import crear_tareas_usuario
+from .asignacion_tareas import AsignacionTareas
 
 # Login
 
@@ -37,7 +38,7 @@ class Registrarse(FormView):
         user = form.save()
         if user is not None:
             login(self.request,user)
-            crear_tareas_usuario(user)
+            AsignacionTareas.crear_tareas_usuario(user)
         return super(Registrarse, self).form_valid(form)
     
     def get(self, *args, **kwargs):
@@ -85,6 +86,8 @@ class ActualizarTarea(LoginRequiredMixin, UpdateView):
     model = Tareas
     form_class = TareasForm
     success_url = reverse_lazy('tareas')
+
+    
     
 class EliminarTarea(LoginRequiredMixin, DeleteView):
     model = Tareas
@@ -111,13 +114,15 @@ class CrearPreventa(LoginRequiredMixin, CreateView):
     
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         pv = form.save()
-        if pv is not None:
+        if pv is not None:                       
             if pv.tipo_venta == 'C':
-                tarea = Tareas.objects.create(user=pv.user,titulo ='Contado',descripcion='dniaca',pv=pv)
-                tarea.save()
+                AsignacionTareas.crear_tareas_preventa_contado(pv.user,pv)
             else:
-                tarea = Tareas.objects.create(user=pv.user,titulo ='Financiado',descripcion='dniaca',pv=pv)
-                tarea.save()
+                AsignacionTareas.crear_tareas_preventa_financiado(pv.user,pv)
+            if pv.tipo_cliente == "PF":
+                AsignacionTareas.crear_tareas_preventa_persona_fisica(pv.user,pv)
+            else:
+                AsignacionTareas.crear_tareas_preventa_persona_juridica(pv.user,pv)
             return redirect('tareas')
     
     

@@ -7,12 +7,20 @@
 
 <div class="card-body">
     <form method="POST" action="">
-        {%csrf_token%}
-        {{form.as_p}}
+        {% csrf_token %}
+        {{ form.as_p }}
         <input class="button" type="submit" value="Guardar">
+        {% if form.descarga.value != "" and form.descarga.value is not none %}
+            <input class="button" type="button" onclick="descargarArchivo('{{ form.descarga.value }}')" value="Descargar">
+        {% endif %}
     </form>
 </div>
 
+<script>
+    function descargarArchivo(url) {
+        window.location.href = url;
+    }
+</script>
 
 
 {% endblock content %}
