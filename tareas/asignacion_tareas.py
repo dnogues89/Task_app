@@ -40,13 +40,13 @@ class AsignacionTareas():
         tarea.save()
 
     def crear_tarea_retira_cliente_final(usuario,preventa):
-        tarea = Tareas.objects.create(user = usuario, titulo = 'Autorizacion retira titular',descripcion='Descargar archivo y adjuntar firmado', descarga="autorizacion")
+        tarea = Tareas.objects.create(user = usuario, titulo = 'Autorizacion retira titular',descripcion='Descargar archivo y adjuntar firmado', descarga="autorizacion", pv=preventa)
         tarea.save()
         
     def crear_tareas_retiro_individuo(usuario,preventa):
-        tarea = Tareas.objects.create(user = usuario, titulo = 'DNI Frente',descripcion='Foto frente dni del que retira', descarga="https://google.com.ar")
+        tarea = Tareas.objects.create(user = usuario, titulo = 'DNI Frente',descripcion='Foto frente dni del que retira', descarga="https://google.com.ar",pv=preventa)
         tarea.save()
-        tarea = Tareas.objects.create(user = usuario, titulo = 'DNI Dorso',descripcion='Foto dorso dni del que retira')
+        tarea = Tareas.objects.create(user = usuario, titulo = 'DNI Dorso',descripcion='Foto dorso dni del que retira',pv=preventa)
         tarea.save()
 
     def crear_tareas_retiro_transporte(usuario,preventa):

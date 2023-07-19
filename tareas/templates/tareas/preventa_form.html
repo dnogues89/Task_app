@@ -1,13 +1,22 @@
 {% extends 'tareas/base.html' %}
 {% block content %}
 
-<h1>Crear Preventa</h1>
-<a href="{% url 'tareas' %}">Atras</a>
+<div class="header-bar">
+    <a href="{% url 'preventas' %}">&#8592; Atras</a>
+</div>
 
-<form method="POST" action="">
-    {%csrf_token%}
-    {{form.as_p}}
-    <input type="submit" value="Crear">
-</form>
+<div class="card-body">
+    <h1>PV: {{form.preventa.value}}</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input class="button" type="submit" value="Guardar">
+        
+        {% if preventa.id %}
+            <a href="{% url 'lista-tareas-preventa' pk=preventa_id %}" class="button">Tareas de la preventa</a>    
+        {% endif %}    
+    </form>
+    
+</div>
 
 {% endblock content %}

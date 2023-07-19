@@ -14,7 +14,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 
-from .models import Tareas, Preventa, TareasForm
+from .models import Tareas, Preventa, TareasForm, PreventaForm, TareasPreventa
+from django.contrib.auth.models import User
 
 from .asignacion_tareas import AsignacionTareas
 
@@ -60,12 +61,17 @@ class ListaTareas(LoginRequiredMixin, ListView):
     
 class ListaTareasPreventa(LoginRequiredMixin, ListView):
     model = Tareas    
-    
     template_name = 'tareas/tareas_list.html'
     context_object_name = "tareas"
     
     def get_queryset(self) -> QuerySet[Any]:
         return Tareas.objects.filter(pv_id=self.kwargs['pk']).all()
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['tareas'] = context['tareas'].filter(user=self.request.user)
+        context['cantidad'] = context['tareas'].filter(completo=False).count()
+        return context
     
 class DetalleTareas(LoginRequiredMixin, DetailView):
     model = Tareas
@@ -86,8 +92,6 @@ class ActualizarTarea(LoginRequiredMixin, UpdateView):
     model = Tareas
     form_class = TareasForm
     success_url = reverse_lazy('tareas')
-
-    
     
 class EliminarTarea(LoginRequiredMixin, DeleteView):
     model = Tareas
@@ -124,5 +128,38 @@ class CrearPreventa(LoginRequiredMixin, CreateView):
             else:
                 AsignacionTareas.crear_tareas_preventa_persona_juridica(pv.user,pv)
             return redirect('tareas')
+        
+
+class ActualizarPreventa(LoginRequiredMixin, UpdateView):
+    model = Preventa
+    form_class=PreventaForm
+    success_url = reverse_lazy('preventa')
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['preventa_id'] = self.object.pk  # Pasar el ID de la preventa al contexto
+        return context
     
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        pv = form.save()
+        if pv is not None:
+            if pv.retira_unidad == 'Transportista':
+                AsignacionTareas.crear_tareas_retiro_transporte(pv.user,pv)
+            if pv.retira_unidad == 'Individuo':
+                AsignacionTareas.crear_tareas_retiro_individuo(pv.user,pv)
+            if pv.retira_unidad == 'Titular':
+                AsignacionTareas.crear_tarea_retira_cliente_final(pv.user,pv)
+            
+            if pv.cedulas_azules != 0 or pv.cedulas_azules != None or pv.cedulas_azules != "":
+                for i in range(0,pv.cedulas_azules):
+                    AsignacionTareas.crear_cedula_azul(pv.user,pv)
+            
+            print(pv.socios)
+
+            if pv.socios != 0 or pv.socios != None or pv.socios != "":
+                for i in range(0,pv.socios):
+                    AsignacionTareas.crear_socio_persona_fisica(pv.user,pv)
+
+        return redirect('preventas')
+
+

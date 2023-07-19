@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ListaTareas, DetalleTareas, CrearTarea, ActualizarTarea, EliminarTarea, MiLoginView, Registrarse, CrearPreventa,ListaPreventas, ListaTareasPreventa
+from .views import ListaTareas, DetalleTareas, CrearTarea, ActualizarTarea, EliminarTarea, MiLoginView, Registrarse, CrearPreventa,ListaPreventas, ListaTareasPreventa,ActualizarPreventa
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -11,7 +11,8 @@ urlpatterns = [
     #Preventas Views
     path('crear-preventa',CrearPreventa.as_view(),name='crear-preventa'),
     path('preventas/',ListaPreventas.as_view(),name='preventas'),
-    path('preventas/<int:pk>',ListaTareasPreventa.as_view(),name='lista-preventas'),
+    path('preventas/<int:pk>', ActualizarPreventa.as_view(),name='actualizar-preventa'),
+    path('preventas/tareas/<int:pk>', ListaTareasPreventa.as_view(),name='lista-tareas-preventa'),
     
     #Tareas Views  
     path('',ListaTareas.as_view(),name='tareas'),
