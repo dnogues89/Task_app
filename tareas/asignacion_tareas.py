@@ -1,5 +1,4 @@
 from .models import Tareas
-from django.utils.safestring import mark_safe
 
     # user = models.ForeignKey(User, on_delete=models.SET_NULL,null=True,blank=True)
     # titulo = models.CharField(max_length=200)
