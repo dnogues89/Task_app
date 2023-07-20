@@ -20,4 +20,5 @@ urlpatterns = [
     path('crear-tarea/',CrearTarea.as_view(),name='crear-tarea'),
     path('actualizar-tarea/<int:pk>/',ActualizarTarea.as_view(),name='actualizar-tarea'),
     path('eliminar-tarea/<int:pk>/',EliminarTarea.as_view(),name='eliminar-tarea'),
+
 ]

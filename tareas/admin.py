@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import Tareas, Preventa, TareasPreventa
+from .models import Tareas, Preventa, Vendedor
 
 
 # Register your models here.
 admin.site.register(Tareas)
 admin.site.register(Preventa)
-admin.site.register(TareasPreventa)
+admin.site.register(Vendedor)

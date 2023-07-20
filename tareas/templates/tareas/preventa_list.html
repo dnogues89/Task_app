@@ -31,11 +31,18 @@
 <div class="task-items-wraper">
     {% for preventa in preventas %}
         <div class="task-wraper">
+            {% if preventa.completo %}
+                <div class="task-title">
+                    <div class="task-complete-icon"></div>
+                    <i><s><a href="{% url 'actualizar-preventa' pk=preventa.id %}">{{preventa.preventa}}</a></s></i>
+                </div>
+            {% else %}
                 <div class="task-title">
                     <div class="task-incomplete-icon"></div>
                     <a href="{% url 'actualizar-preventa' pk=preventa.id %}">{{preventa.preventa}}</a>
 
                 </div>           
+            {% endif %}       
         </div>
 
     {% empty %}

@@ -160,4 +160,3 @@ class ActualizarPreventa(LoginRequiredMixin, UpdateView):
 
         return redirect('preventas')
 
-

@@ -4,6 +4,16 @@ from django.contrib.auth.models import User
 
 
 # Create your models here.
+class Vendedor(models.Model):
+    vendedor=models.ForeignKey(User,on_delete=models.CASCADE)
+    
+    def __str__(self) -> str:
+        return self.vendedor.username
+    
+    class Meta:
+        verbose_name = 'vendedor'
+        verbose_name_plural = 'vendedores'
+        
 
 
 class Preventa(models.Model):
@@ -17,7 +27,10 @@ class Preventa(models.Model):
     retira_unidad = models.CharField(max_length= 15, choices=choises, blank=True,null=True)
     cedulas_azules = models.IntegerField(blank=True,null=True)
     socios = models.IntegerField(blank=True,null=True)
+    vendedor = models.ForeignKey(Vendedor, on_delete=models.CASCADE, null=True,blank=True)
     completo=models.BooleanField(default=False)
+    fecha_inicio = models.DateTimeField(auto_now=True,verbose_name='Fecha de creacion')
+
     
     def __str__(self) -> str:
         return self.preventa
@@ -30,7 +43,9 @@ class PreventaForm(forms.ModelForm):
     retira_unidad = forms.ChoiceField(choices= choises, required=False, disabled=False, label='Quien retira la unidad?')
     cedulas_azules = forms.IntegerField(required=False, label='Cantidad cedulas azules. En numero')
     socios = forms.IntegerField(required=False,label='Si es persona Juridica debe indicar cuantos socios. En numero')
+    vendedor = forms.ModelChoiceField(required=False,queryset=Vendedor.objects.all(), disabled=True)
     completo = forms.BooleanField(required=False, label='Operacion terminada.')
+
     
     
     
@@ -62,7 +77,7 @@ class TareasForm(forms.ModelForm):
     descarga = forms.URLField(required=False, disabled=False, label='Descargar archivo para firmar')
     adjunto = forms.FileField(required=False,label='Adjuntar Archivo')
     completo = forms.BooleanField(required=False,label='Tarea Realizada')
-    #creado = forms.DateField(required=False,disabled=True,label='Fecha de creacion')
+    creado = forms.DateField(required=False,disabled=True,label='Fecha de creacion')
     pv = forms.ModelChoiceField(required=False,queryset=Preventa.objects.all(), disabled=True,label="Preventa")
     
     class Meta:
