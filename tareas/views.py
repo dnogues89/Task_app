@@ -93,6 +93,15 @@ class ActualizarTarea(LoginRequiredMixin, UpdateView):
     form_class = TareasForm
     success_url = reverse_lazy('tareas')
     
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, request.FILES, instance=self.get_object())
+        if form.is_valid():
+            form.save()
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    
 class EliminarTarea(LoginRequiredMixin, DeleteView):
     model = Tareas
     context_object_name = 'tarea'

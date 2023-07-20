@@ -2,6 +2,10 @@ from django.urls import path
 from .views import ListaTareas, DetalleTareas, CrearTarea, ActualizarTarea, EliminarTarea, MiLoginView, Registrarse, CrearPreventa,ListaPreventas, ListaTareasPreventa,ActualizarPreventa
 from django.contrib.auth.views import LogoutView
 
+#media
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     #Vistas para el login
     path('login/', MiLoginView.as_view(), name='login'),
@@ -22,3 +26,6 @@ urlpatterns = [
     path('eliminar-tarea/<int:pk>/',EliminarTarea.as_view(),name='eliminar-tarea'),
 
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

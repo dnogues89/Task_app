@@ -1,7 +1,10 @@
+from typing import Iterable, Optional
 from django.db import models
 from django import forms
 from django.contrib.auth.models import User
 
+def save_path(instance,filename):
+    return f'user_{instance.user.id}/{filename}'
 
 # Create your models here.
 class Vendedor(models.Model):
@@ -55,20 +58,23 @@ class PreventaForm(forms.ModelForm):
     
     
 class Tareas(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL,null=True,blank=True,verbose_name="Usuario")
-    titulo = models.CharField(max_length=200,verbose_name="Tarea")
-    descripcion = models.TextField(null=True,blank=True,verbose_name="Descripcion de la tarea")
+    user = models.ForeignKey(User, on_delete=models.SET_NULL,null=True,blank=True)
+    titulo = models.CharField(max_length=200)
+    descripcion = models.TextField(null=True,blank=True)
     descarga = models.URLField(null=True,blank=True)
-    adjunto = models.FileField(blank=True,null=True,verbose_name="Adjuntar archivo")
-    completo = models.BooleanField(default=False,verbose_name="Tarea Realizada")
-    creado = models.DateField(auto_now_add=True,verbose_name="Fecha de creacion")
-    pv = models.ForeignKey(Preventa, on_delete=models.SET_NULL, null=True,blank=True,verbose_name="Preventa")
+    adjunto = models.FileField(blank=True,null=True,upload_to=save_path)
+    completo = models.BooleanField(default=False)
+    creado = models.DateField(auto_now_add=True)
+    pv = models.ForeignKey(Preventa, on_delete=models.SET_NULL, null=True,blank=True)
     
     def __str__(self) -> str:
         return self.titulo
     
+    
     class Meta:
         ordering = ['completo']
+        verbose_name = 'tarea'
+        verbose_name_plural = 'tareas'
     
 class TareasForm(forms.ModelForm):
     user = forms.ModelChoiceField(required=False,queryset=User.objects.all(), disabled=True,label="Usuario")
@@ -82,7 +88,7 @@ class TareasForm(forms.ModelForm):
     
     class Meta:
         model = Tareas
-        fields = ['user','pv','titulo','descripcion','adjunto','completo','descarga']
+        fields = '__all__'
 
 class TareasPreventa(models.Model):
     preventa = models.ForeignKey(Preventa, on_delete=models.SET_NULL, null=True,blank=True,verbose_name="Preventa")
