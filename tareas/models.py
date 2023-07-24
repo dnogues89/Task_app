@@ -1,9 +1,12 @@
-from typing import Iterable, Optional
+from typing import Any, Dict, Iterable, Optional, Tuple
+import os
 from django.db import models
 from django import forms
 from django.contrib.auth.models import User
 
 def save_path(instance,filename):
+    if instance.pv is not None or instance.pv != '':
+        return f'user_{instance.user.id}/{instance.pv_id}/{filename}'
     return f'user_{instance.user.id}/{filename}'
 
 # Create your models here.
@@ -21,7 +24,7 @@ class Vendedor(models.Model):
 
 class Preventa(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL,null=True,blank=True)
-    preventa = models.CharField(max_length=8, help_text="Ejemplo 12345/1",unique=True)
+    preventa = models.CharField(max_length=8, help_text="Ejemplo 12345/1",primary_key=True)
     choises = [('Contado','Contado'),('Financiado','Financiado')]
     tipo_venta = models.CharField(max_length= 15, choices=choises)
     choises = [('Persona Fisica','Persona Fisica'),('Persona Juridica','Persona Juridica')]
@@ -33,6 +36,8 @@ class Preventa(models.Model):
     vendedor = models.ForeignKey(Vendedor, on_delete=models.CASCADE, null=True,blank=True)
     completo=models.BooleanField(default=False)
     fecha_inicio = models.DateTimeField(auto_now=True,verbose_name='Fecha de creacion')
+    
+
 
     
     def __str__(self) -> str:
@@ -58,17 +63,50 @@ class PreventaForm(forms.ModelForm):
     
     
 class Tareas(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL,null=True,blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
     titulo = models.CharField(max_length=200)
     descripcion = models.TextField(null=True,blank=True)
     descarga = models.URLField(null=True,blank=True)
     adjunto = models.FileField(blank=True,null=True,upload_to=save_path)
     completo = models.BooleanField(default=False)
     creado = models.DateField(auto_now_add=True)
-    pv = models.ForeignKey(Preventa, on_delete=models.SET_NULL, null=True,blank=True)
+    pv = models.ForeignKey(Preventa, on_delete=models.CASCADE, null=True,blank=True)
     
     def __str__(self) -> str:
         return self.titulo
+    
+    def save(self, *args, **kwargs):
+        # Verificar si se está modificando una instancia existente.
+        if self.pk is not None:
+            try:
+                # Obtener el objeto existente de la base de datos.
+                old_obj = Tareas.objects.get(pk=self.pk)
+
+            except Tareas.DoesNotExist:
+                pass
+            else:
+                # Verificar si el archivo adjunto ha sido modificado.
+                if old_obj.adjunto != self.adjunto:
+                    # Eliminar el archivo adjunto anterior si ha sido modificado.
+                    old_obj.adjunto.delete(save=False)
+                    #Nombre del archivo
+            
+            try:
+                #nombre de archivo
+                _,ext = os.path.splitext(os.path.basename(self.adjunto.name))
+                self.adjunto.name = f'{self.titulo}{ext}'
+            except:
+                pass
+        
+        # Guardar la instancia del modelo con el nuevo archivo adjunto.
+        super().save(*args, **kwargs)
+
+    
+    def delete(self, using: Any = None, keep_parents: bool = False) -> Tuple[int, Dict[str, int]]:
+        self.adjunto.delete()
+        super().delete(using=using, keep_parents=keep_parents)
+        
+
     
     
     class Meta:
@@ -89,11 +127,4 @@ class TareasForm(forms.ModelForm):
     class Meta:
         model = Tareas
         fields = '__all__'
-
-class TareasPreventa(models.Model):
-    preventa = models.ForeignKey(Preventa, on_delete=models.SET_NULL, null=True,blank=True,verbose_name="Preventa")
-    choises = [(1,'Transportista'),(2,'Individuo'),(3,'Titular')]
-    retira_unidad = models.IntegerField(max_length= 15, choices=choises, blank=True,null=True)
-    cedulas_azules = models.IntegerField(blank=True,null=True)
-    socios = models.IntegerField(blank=True,null=True)
-    
+        

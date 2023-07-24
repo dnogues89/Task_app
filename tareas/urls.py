@@ -1,10 +1,17 @@
-from django.urls import path
-from .views import ListaTareas, DetalleTareas, CrearTarea, ActualizarTarea, EliminarTarea, MiLoginView, Registrarse, CrearPreventa,ListaPreventas, ListaTareasPreventa,ActualizarPreventa
+from django.urls import path, include
+from .views import ListaTareas, DetalleTareas, CrearTarea, ActualizarTarea, EliminarTarea, MiLoginView, Registrarse, CrearPreventa,ListaPreventas, ListaTareasPreventa, ActualizarPreventa, PreventaSerializerViewSet 
 from django.contrib.auth.views import LogoutView
+
+#api
+from rest_framework import routers
+routers = routers.DefaultRouter()
+routers.register(r'api-preventas',PreventaSerializerViewSet)
 
 #media
 from django.conf import settings
 from django.conf.urls.static import static
+
+
 
 urlpatterns = [
     #Vistas para el login
@@ -24,6 +31,10 @@ urlpatterns = [
     path('crear-tarea/',CrearTarea.as_view(),name='crear-tarea'),
     path('actualizar-tarea/<int:pk>/',ActualizarTarea.as_view(),name='actualizar-tarea'),
     path('eliminar-tarea/<int:pk>/',EliminarTarea.as_view(),name='eliminar-tarea'),
+    
+    #Api
+    path('', include(routers.urls))
+
 
 ]
 
