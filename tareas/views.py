@@ -2,8 +2,8 @@ from typing import Any, Dict, Type
 
 from django.db.models.query import QuerySet
 from django.forms.models import BaseModelForm
-from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
@@ -14,10 +14,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 
-from .models import Tareas, Preventa, TareasForm, PreventaForm, TareasPreventa
-from django.contrib.auth.models import User
+from .models import Tareas, Preventa, TareasForm, PreventaForm
 
 from .asignacion_tareas import AsignacionTareas
+
+
 
 # Login
 
@@ -80,7 +81,7 @@ class DetalleTareas(LoginRequiredMixin, DetailView):
     
 class CrearTarea(LoginRequiredMixin, CreateView):
     model = Tareas
-    fields = ['titulo','descripcion','completo']
+    fields = ('titulo','descripcion','completo','descarga','adjunto',)
     success_url = reverse_lazy('tareas')
     
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
@@ -93,19 +94,13 @@ class ActualizarTarea(LoginRequiredMixin, UpdateView):
     form_class = TareasForm
     success_url = reverse_lazy('tareas')
     
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST, request.FILES, instance=self.get_object())
-        if form.is_valid():
-            form.save()
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
 
     
 class EliminarTarea(LoginRequiredMixin, DeleteView):
     model = Tareas
     context_object_name = 'tarea'
     success_url = reverse_lazy('tareas')
+    
     
 # Crear Preventas
 
@@ -128,11 +123,11 @@ class CrearPreventa(LoginRequiredMixin, CreateView):
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         pv = form.save()
         if pv is not None:                       
-            if pv.tipo_venta == 'C':
+            if pv.tipo_venta == 'Contado':
                 AsignacionTareas.crear_tareas_preventa_contado(pv.user,pv)
             else:
                 AsignacionTareas.crear_tareas_preventa_financiado(pv.user,pv)
-            if pv.tipo_cliente == "PF":
+            if pv.tipo_cliente == "Persona Fisica":
                 AsignacionTareas.crear_tareas_preventa_persona_fisica(pv.user,pv)
             else:
                 AsignacionTareas.crear_tareas_preventa_persona_juridica(pv.user,pv)
@@ -169,3 +164,31 @@ class ActualizarPreventa(LoginRequiredMixin, UpdateView):
 
         return redirect('preventas')
 
+#api
+from .serializer import PreventaSerializer
+from rest_framework import viewsets
+from rest_framework.response import Response
+
+class PreventaSerializerViewSet(viewsets.ModelViewSet):
+    queryset = Preventa.objects.all()
+    serializer_class = PreventaSerializer   
+    
+    def create(self, request, *args, **kwargs):
+        pv = PreventaSerializer(data=request.data)
+        if pv.is_valid():
+            super().create(request, *args, **kwargs)
+            preventa = self.get_object()
+            print(pv.validated_data)
+            if pv.validated_data['tipo_venta'] == 'Contado':
+                AsignacionTareas.crear_tareas_preventa_contado(pv.validated_data['user'],preventa)
+            else:
+                AsignacionTareas.crear_tareas_preventa_financiado(pv.validated_data['user'],preventa)
+            if pv.validated_data['tipo_cliente'] == "Persona Fisica":
+                AsignacionTareas.crear_tareas_preventa_persona_fisica(pv.validated_data['user'],preventa)
+            else:
+                AsignacionTareas.crear_tareas_preventa_persona_juridica(pv.validated_data['user'],preventa)
+                
+            return Response(pv.data)
+        return Response(pv.data)
+
+        
