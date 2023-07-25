@@ -69,6 +69,7 @@ class Tareas(models.Model):
     descarga = models.URLField(null=True,blank=True)
     adjunto = models.FileField(blank=True,null=True,upload_to=save_path)
     completo = models.BooleanField(default=False)
+    # actualizado = models.DateField(auto_created=) # fecha de actualizacion para 
     creado = models.DateField(auto_now_add=True)
     pv = models.ForeignKey(Preventa, on_delete=models.CASCADE, null=True,blank=True)
     

@@ -1,11 +1,36 @@
 
 from tareas.models import Preventa, User, Tareas
 from tareas.asignacion_tareas import AsignacionTareas
+from django.db.models import Q
 
 #api
-from api.serializer import PreventaSerializer
+from api.serializer import PreventaSerializer, TareasSerializer
 from rest_framework import viewsets
+
+from django.http import Http404
+from rest_framework.views import APIView
+
 from rest_framework.response import Response
+
+
+class TareasSerializerViewset(viewsets.ModelViewSet):
+    queryset = Tareas.objects.all()
+    serializer_class = TareasSerializer
+    
+    #Enviar al endpoint una preventa valida
+    def list(self, requests):        
+        try:
+            data = requests.data
+            user = Preventa.objects.get(preventa=data['preventa'])
+            preventa = user.id
+            user = user.user_id
+            queryset = Tareas.objects.filter(Q(user=user, pv=None) | Q(pv=preventa))
+            
+            serializer = TareasSerializer(queryset, many=True)
+            return Response(serializer.data)
+        except:
+            return Response('Preventa no valida')
+    
 
 
 class PreventaSerializerViewSet(viewsets.ModelViewSet):
