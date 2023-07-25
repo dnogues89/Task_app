@@ -24,7 +24,7 @@ class Vendedor(models.Model):
 
 class Preventa(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL,null=True,blank=True)
-    preventa = models.CharField(max_length=8, help_text="Ejemplo 12345/1",primary_key=True)
+    preventa = models.CharField(max_length=8, help_text="Ejemplo 12345/1",unique=True)
     choises = [('Contado','Contado'),('Financiado','Financiado')]
     tipo_venta = models.CharField(max_length= 15, choices=choises)
     choises = [('Persona Fisica','Persona Fisica'),('Persona Juridica','Persona Juridica')]

@@ -164,31 +164,3 @@ class ActualizarPreventa(LoginRequiredMixin, UpdateView):
 
         return redirect('preventas')
 
-#api
-from .serializer import PreventaSerializer
-from rest_framework import viewsets
-from rest_framework.response import Response
-
-class PreventaSerializerViewSet(viewsets.ModelViewSet):
-    queryset = Preventa.objects.all()
-    serializer_class = PreventaSerializer   
-    
-    def create(self, request, *args, **kwargs):
-        pv = PreventaSerializer(data=request.data)
-        if pv.is_valid():
-            super().create(request, *args, **kwargs)
-            preventa = self.get_object()
-            print(pv.validated_data)
-            if pv.validated_data['tipo_venta'] == 'Contado':
-                AsignacionTareas.crear_tareas_preventa_contado(pv.validated_data['user'],preventa)
-            else:
-                AsignacionTareas.crear_tareas_preventa_financiado(pv.validated_data['user'],preventa)
-            if pv.validated_data['tipo_cliente'] == "Persona Fisica":
-                AsignacionTareas.crear_tareas_preventa_persona_fisica(pv.validated_data['user'],preventa)
-            else:
-                AsignacionTareas.crear_tareas_preventa_persona_juridica(pv.validated_data['user'],preventa)
-                
-            return Response(pv.data)
-        return Response(pv.data)
-
-        
