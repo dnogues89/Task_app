@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from tareas.models import  Preventa, Tareas
 
-class TareasSerializer(serializers.Serializer):
+class TareasSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tareas
         fields = '__all__'
