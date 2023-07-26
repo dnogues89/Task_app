@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import ListaTareas, DetalleTareas, CrearTarea, ActualizarTarea, EliminarTarea, MiLoginView, Registrarse, CrearPreventa,ListaPreventas, ListaTareasPreventa, ActualizarPreventa 
+from .views import ListaTareas, DetalleTareas, CrearTarea, ActualizarTarea, EliminarTarea, MiLoginView, Registrarse, CrearPreventa,ListaPreventas, ListaTareasPreventa, ActualizarPreventa,download_file
 from django.contrib.auth.views import LogoutView
 
 
@@ -29,6 +29,8 @@ urlpatterns = [
     path('actualizar-tarea/<int:pk>/',ActualizarTarea.as_view(),name='actualizar-tarea'),
     path('eliminar-tarea/<int:pk>/',EliminarTarea.as_view(),name='eliminar-tarea'),
     
+    #descargar archivos
+    path('download/<str:file_name>/', download_file, name='download_file'),
 ]
 
 if settings.DEBUG:

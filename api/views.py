@@ -19,17 +19,18 @@ class TareasSerializerViewset(viewsets.ModelViewSet):
     
     #Enviar al endpoint una preventa valida
     def list(self, requests):        
-        try:
-            data = requests.data
-            user = Preventa.objects.get(preventa=data['preventa'])
-            preventa = user.id
-            user = user.user_id
-            queryset = Tareas.objects.filter(Q(user=user, pv=None) | Q(pv=preventa))
-            
-            serializer = TareasSerializer(queryset, many=True)
-            return Response(serializer.data)
-        except:
-            return Response('Preventa no valida')
+        # try:
+        data = requests.data
+        user = Preventa.objects.get(preventa=data['preventa'])
+        preventa = user.id
+        user = user.user_id
+        queryset = Tareas.objects.filter(Q(user=user, pv=None) | Q(pv=preventa))
+        print(queryset)
+        serializer = TareasSerializer(queryset, many=True)
+        print(serializer.data)
+        return Response(serializer.data)
+        # except:
+        #     return Response('Preventa no valida')
     
 
 

@@ -53,6 +53,7 @@ class PreventaForm(forms.ModelForm):
     socios = forms.IntegerField(required=False,label='Si es persona Juridica debe indicar cuantos socios. En numero')
     vendedor = forms.ModelChoiceField(required=False,queryset=Vendedor.objects.all(), disabled=True)
     completo = forms.BooleanField(required=False, label='Operacion terminada.')
+    
 
     
     
@@ -69,7 +70,7 @@ class Tareas(models.Model):
     descarga = models.URLField(null=True,blank=True)
     adjunto = models.FileField(blank=True,null=True,upload_to=save_path)
     completo = models.BooleanField(default=False)
-    # actualizado = models.DateField(auto_created=) # fecha de actualizacion para 
+    actualizado = models.DateField(auto_now=True) # fecha de actualizacion para 
     creado = models.DateField(auto_now_add=True)
     pv = models.ForeignKey(Preventa, on_delete=models.CASCADE, null=True,blank=True)
     
@@ -124,6 +125,7 @@ class TareasForm(forms.ModelForm):
     completo = forms.BooleanField(required=False,label='Tarea Realizada')
     creado = forms.DateField(required=False,disabled=True,label='Fecha de creacion')
     pv = forms.ModelChoiceField(required=False,queryset=Preventa.objects.all(), disabled=True,label="Preventa")
+    actualizado = models.DateField(auto_now=True) # fecha de actualizacion para 
     
     class Meta:
         model = Tareas

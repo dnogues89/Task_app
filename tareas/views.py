@@ -1,4 +1,7 @@
 from typing import Any, Dict, Type
+import os
+from django.http import HttpResponse
+from django.conf import settings
 
 from django.db.models.query import QuerySet
 from django.forms.models import BaseModelForm
@@ -18,7 +21,16 @@ from .models import Tareas, Preventa, TareasForm, PreventaForm
 
 from .asignacion_tareas import AsignacionTareas
 
-
+#Descargar archivos
+def download_file(request, file_name):
+    file_path = os.path.join(settings.MEDIA_ROOT, 'archivos_para_descargar' ,file_name)
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as file:
+            response = HttpResponse(file.read(), content_type='application/octet-stream')
+            response['Content-Disposition'] = f'attachment; filename="{os.path.basename(file_path)}"'
+            return response
+    else:
+        return HttpResponse('Archivo no encontrado.', status=404)
 
 # Login
 

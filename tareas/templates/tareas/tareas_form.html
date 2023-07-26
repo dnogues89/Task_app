@@ -11,7 +11,7 @@
         {{ form.as_p }}
         <input class="button" type="submit" value="Guardar">
         {% if form.descarga.value != "" and form.descarga.value is not none %}
-            <input class="button" type="button" onclick="descargarArchivo('{{ form.descarga.value }}')" value="Descargar">
+            <a class="button" href="{% url 'download_file' form.descarga.value %}">Descargar</a>
         {% endif %}
     </form>
 </div>
