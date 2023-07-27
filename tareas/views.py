@@ -159,12 +159,42 @@ class ActualizarPreventa(LoginRequiredMixin, UpdateView):
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         pv = form.save()
         if pv is not None:
+            if pv.tipo_venta == 'Contado':
+                antes = Tareas.objects.filter(pv=pv,titulo='Cuentas Activas Firmadas').count()
+                if antes == 0:
+                    AsignacionTareas.crear_tareas_preventa_contado(pv.user,pv)
+            else:
+                antes = Tareas.objects.filter(pv=pv,titulo='Anexo 1.2 del credito').count()
+                if antes == 0:
+                    AsignacionTareas.crear_tareas_preventa_financiado(pv.user,pv)
+            if pv.tipo_cliente == "Persona Fisica":
+                antes = Tareas.objects.filter(pv=pv,titulo='Titular DNI FRENTE').count()
+                if antes ==0:
+                    AsignacionTareas.crear_tareas_preventa_persona_fisica(pv.user,pv)
+            else:
+                antes = Tareas.objects.filter(pv=pv,titulo='Declaracion Jurada Persona Juridica').count()
+                if antes ==0:
+                    AsignacionTareas.crear_tareas_preventa_persona_juridica(pv.user,pv)
+                
+            if pv.estado_civil=='Casado/a':
+                antes = Tareas.objects.filter(pv=pv,titulo='Conyugue DNI FRENTE').count()
+                if antes == 0:
+                    AsignacionTareas.crear_tarea_conyugue(pv.user,pv)
+                    
+                
+                
             if pv.retira_unidad == 'Transportista':
-                AsignacionTareas.crear_tareas_retiro_transporte(pv.user,pv)
+                antes = Tareas.objects.filter(pv=pv,titulo='COT').count()
+                if antes == 0:
+                    AsignacionTareas.crear_tareas_retiro_transporte(pv.user,pv)
             if pv.retira_unidad == 'Individuo':
-                AsignacionTareas.crear_tareas_retiro_individuo(pv.user,pv)
+                antes = Tareas.objects.filter(pv=pv,titulo='DNI Frente retira unidad').count()
+                if antes == 0:
+                    AsignacionTareas.crear_tareas_retiro_individuo(pv.user,pv)
             if pv.retira_unidad == 'Titular':
-                AsignacionTareas.crear_tarea_retira_cliente_final(pv.user,pv)
+                antes = Tareas.objects.filter(pv=pv,titulo='Autorizacion retira titular').count()
+                if antes == 0:
+                    AsignacionTareas.crear_tarea_retira_cliente_final(pv.user,pv)
             if pv.cedulas_azules != 0 and pv.cedulas_azules is not None and pv.cedulas_azules != "":
                 azules_actuales = Tareas.objects.filter(pv=pv,titulo='Cedula azul DNI FRENTE').count()
                 for i in range(0,pv.cedulas_azules-azules_actuales):
