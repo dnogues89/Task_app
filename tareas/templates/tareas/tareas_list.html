@@ -5,7 +5,7 @@
     <div>
         <div >
             <h1>Hola {{request.user|title}}</h1>
-            <a href="{% url 'preventas' %}"><h3 style="margin-right: 20px; display: flex;">Preventas</h3></a>
+            <u><a href="{% url 'preventas' %}"><h3 style="margin-right: 20px; display: flex;">Preventas</h3></a></u>
             <h3 style="margin:0"> Tenes {{cantidad}} tarea{{cantidad|pluralize:"s" }} pendientes</h3> 
 
         </div>
@@ -43,7 +43,7 @@
                     <a href="{% url 'actualizar-tarea' tarea.id %}">{{tarea}}</a>
 
                 </div>           
-                <a class="delete-link" href="{% url 'eliminar-tarea' tarea.id %}">&#215;</a>
+                <a class="delete-link" href="{% url 'eliminar-tarea' tarea.id %}">&#128465;</a>
             
                 {% endif %}
 
