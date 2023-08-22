@@ -47,7 +47,7 @@ class Preventa(models.Model):
     socios = models.IntegerField(blank=True,null=True)
     choises = [('Transportista','Transportista'),('Individuo','Individuo'),('Titular','Titular')]
     retira_unidad = models.CharField(max_length= 15, choices=choises, blank=True,null=True)
-    monto = models.IntegerField(null = True, blank = True)
+    contado = models.BooleanField(null=True)
     vendedor = models.ForeignKey(Vendedor, on_delete=models.CASCADE, null=True,blank=True)
     completo=models.BooleanField(default=False)
     fecha_inicio = models.DateTimeField(auto_now=True,verbose_name='Fecha de creacion')

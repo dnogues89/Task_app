@@ -1,0 +1,53 @@
+{% extends 'tareas/base.html' %}
+{% block content %}
+
+
+<div class="header-bar">
+    <div>
+        <div >
+            <h1>Hola {{request.user|title}}</h1>
+            <u><a href="{% url 'pagos_preventa' %}"><h3 style="margin-right: 20px; display: flex;">Preventas </h3></a></u>
+            <h3 style="margin:0"> Tenes {{cantidad}} preventa{{cantidad|pluralize:"s" }} para pagar</h3> 
+        </div>
+    </div>
+
+    {% if request.user.is_authenticated %}
+    <a href="{% url 'logout' %}">Desconectarse</a>
+    {% else %}
+    <a href="{% url 'login' %}">Conectarse</a>
+    {% endif %}
+
+</div>
+
+
+<!-- <a href="{% url 'crear-tarea' %}">Crear Tarea</a>
+<a href="{% url 'crear-preventa' %}">Crear Preventa</a>
+
+<form method="GET">
+    <input type="text" name="search-area" value="{{search_input}}">
+    <input type="submit" value="Buscar">
+</form> -->
+
+<div class="task-items-wraper">
+    {% for preventa in preventas %}
+        <div class="task-wraper">
+            {% if preventa.completo %}
+                <div class="task-title">
+                    <div class="task-complete-icon"></div>
+                    <i><s><a href="{% url 'lista-pagos-preventa' pk=preventa.id %}">{{preventa.preventa}}</a></s></i>
+                </div>
+            {% else %}
+                <div class="task-title">
+                    <div class="task-incomplete-icon"></div>
+                    <a href="{% url 'lista-pagos-preventa' pk=preventa.id %}">{{preventa.preventa}}</a>
+
+                </div>           
+            {% endif %}       
+        </div>
+
+    {% empty %}
+    <h3>No tenes preventas activas</h3>
+    {% endfor %}
+</div>
+
+{% endblock content%}

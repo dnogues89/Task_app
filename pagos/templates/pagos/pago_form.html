@@ -1,0 +1,23 @@
+{% extends 'tareas/base.html' %}
+{% block content %}
+
+<div class="header-bar">
+    <a href="{% url 'preventas' %}">&#8592; Atras</a>
+</div>
+
+<div class="card-body">
+    <h1>Comprobante: {{form.numero_comprobante.value}}</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{form.as_p}}
+       
+        <input class="button" type="submit" value="Guardar">
+        
+        {% if preventa.id %}
+            <a href="{% url 'lista-pagos-preventa' pk=preventa.id %}" class="button">Pagos de la preventa</a>    
+        {% endif %}    
+    </form>
+    
+</div>
+
+{% endblock content %}
