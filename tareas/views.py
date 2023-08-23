@@ -40,13 +40,13 @@ class MiLoginView(LoginView):
     redirect_authenticated_user = True
     
     def get_success_url(self) -> str:
-        return reverse_lazy('tareas')
+        return reverse_lazy('home')
 
 class Registrarse(FormView):
     template_name = 'tareas/registrarse.html'
     form_class = UserCreationForm
     redirect_authenticated_user = True
-    success_url = reverse_lazy('tareas')
+    success_url = reverse_lazy('home')
     
     def form_valid(self, form: Any) -> HttpResponse:
         user = form.save()
@@ -57,7 +57,7 @@ class Registrarse(FormView):
     
     def get(self, *args, **kwargs):
         if self.request.user.is_authenticated:
-            return redirect('tareas')
+            return redirect('home')
         return super(Registrarse,self).get(*args,**kwargs)   
 
 # Create your views here.

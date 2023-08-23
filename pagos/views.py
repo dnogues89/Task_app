@@ -1,12 +1,18 @@
+from django.forms.models import BaseModelForm
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView
 from pagos.models import Preventa, Pago, PagoForm
 from django.db.models import Sum
 from django.urls import reverse_lazy
+from django.http import HttpResponseRedirect
 
 #auth
 from django.contrib.auth.mixins import LoginRequiredMixin
+
+def home(request):
+    return render(request,'pagos/home.html')
 
 # Create your views here.
 class ListaPreventas(LoginRequiredMixin,ListView):
@@ -19,8 +25,8 @@ class ListaPreventas(LoginRequiredMixin,ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context['preventas'] = context['preventas'].filter(user=self.request.user)
-        # context['cantidad'] = context['preventas'].filter().count()
+        context['preventas'] = context['preventas'].filter(user=self.request.user)
+        context['cantidad'] = context['preventas'].filter().count()
         return context
 
 class ListaPagosPreventa(LoginRequiredMixin, ListView):
@@ -33,7 +39,14 @@ class ListaPagosPreventa(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['monto_aprobado']= Pago.objects.filter(preventa_id=self.kwargs['pk']).exclude(estado="Rechazado").aggregate(Sum('monto'))['monto__sum']
+        context['pagos']= Pago.objects.filter(preventa_id=self.kwargs['pk'])
+        context['monto_aprobado']= context['pagos'].filter(estado='2Aprobado').aggregate(Sum('monto'))['monto__sum']
+        context['monto_pendiente']= context['pagos'].filter(estado='1Pendiente').aggregate(Sum('monto'))['monto__sum']
+        context['monto_rechazado']= context['pagos'].filter(estado='3Rechazado').aggregate(Sum('monto'))['monto__sum']
+        
+        search = self.request.GET.get('search-area') or ''
+        context['pagos'] = context['pagos'].filter(numero_comprobante__icontains=search)
+        
         return context
 
 class ActualizarPago(LoginRequiredMixin, UpdateView):
@@ -51,6 +64,17 @@ class CrearPago(LoginRequiredMixin, CreateView):
     form_class = PagoForm
     success_url = reverse_lazy('pagos_preventa')
     
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        # Obtener el usuario actual
+        user = self.request.user
+        # Filtrar las preventas asignadas al usuario actual
+        form.fields['preventa'].queryset = Preventa.objects.filter(user=user)
+        return form
+    
     def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super(CrearPago, self).form_valid(form)
+        user = self.request.user
+        pago = form.save(commit=False)
+        pago.user = user
+        pago.save()
+        return HttpResponseRedirect(self.success_url)

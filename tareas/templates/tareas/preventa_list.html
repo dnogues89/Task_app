@@ -5,7 +5,7 @@
     <div>
         <div >
             <h1>Hola {{request.user|title}}</h1>
-            <u><a href="{% url 'tareas' %}"><h3 style="margin-right: 20px; display: flex;">Tareas </h3></a></u>
+            <u><a href="{% url 'home' %}"><h3 style="margin-right: 20px; display: flex;">Home </h3></a></u>
             <h3 style="margin:0"> Tenes {{cantidad}} preventa{{cantidad|pluralize:"s" }} activa{{cantidad|pluralize:"s" }}</h3> 
 
         </div>

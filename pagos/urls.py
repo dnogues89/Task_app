@@ -5,6 +5,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path('', views.home,name='home'),
     #Vistas para el login
     path('preventas/',views.ListaPreventas.as_view(),name='pagos_preventa'),
     path('preventas/<int:pk>', views.ListaPagosPreventa.as_view(),name='lista-pagos-preventa'),

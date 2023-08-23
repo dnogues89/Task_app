@@ -2,15 +2,30 @@
 {% block content %}
 
 <div class="header-bar">
-    <a href="{% url 'preventas' %}">&#8592; Atras</a>
+    <a href="{% url 'pagos_preventa' %}">&#8592; Atras</a>
+    
 </div>
 
+
+
 <div class="card-body">
-    <h1>Comprobante: {{form.numero_comprobante.value}}</h1>
-    <form method="POST">
+    <h1>Nuevo Comprobante</h1>
+    <form enctype="multipart/form-data" method="POST">
         {% csrf_token %}
         {{form.as_p}}
-       
+        <!-- <li>Preventa: {{form.preventa}}</li>
+        <p></p>
+        <li>Numero Comprobante: {{form.numero_comprobante}}</li>
+        <p></p>
+        <li>Monto: {{form.monto}}</li>
+        <p></p>
+        <li>Comprobante: {{form.comprobante}}</li>
+        <p></p>
+        {% if form.estado.value == '3Rechazado' and form.motivo_rechazo.value != '' %}
+            <li>Motivo de rechazo: {{form.motivo_rechazo.value}}</li>
+        <p></p>
+        {% endif %} -->
+        <p></p>
         <input class="button" type="submit" value="Guardar">
         
         {% if preventa.id %}

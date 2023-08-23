@@ -6,8 +6,8 @@
     <div>
         <div >
             <h1>Hola {{request.user|title}}</h1>
-            <u><a href="{% url 'pagos_preventa' %}"><h3 style="margin-right: 20px; display: flex;">Preventas </h3></a></u>
-            <h3 style="margin:0"> Tenes {{cantidad}} preventa{{cantidad|pluralize:"s" }} para pagar</h3> 
+            <u><a href="{% url 'home' %}"><h3 style="margin-right: 20px; display: flex;">Home </h3></a></u>
+            <h3 style="margin:0"> Tenes {{cantidad}} preventa{{cantidad|pluralize:"s" }}</h3> 
         </div>
     </div>
 

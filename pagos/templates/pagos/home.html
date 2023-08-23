@@ -1,0 +1,23 @@
+{% extends 'tareas/base.html' %}
+{% block content %}
+
+<div class="header-bar">
+    <h2 style="text-align: center;">Bienvendo: {{request.user|title}}</h1>
+</div>
+
+<div class="card-body" style="text-align: center;">
+    <h4 style="text-align: center;">Esta a la plataforma de autogestión tanto de documentación como de pagos por la compra de tu auto 0km en ESPASA!</h4>
+    <p></p>
+    <a style="display: inline-block; width: 120px;" href="{% url 'tareas' %}" class="button">Documentacion</a>
+    <a style="display: inline-block; width: 120px;" href="{% url 'pagos_preventa' %}" class="button">Pagos</a>
+    <a style="display: inline-block; width: 120px;" href="{% url 'pagos_preventa' %}" class="button">Operaciones</a>
+    <p>
+
+    </p>
+    {% if request.user.is_authenticated %}
+    <a href="{% url 'logout' %}">Desconectarse</a>
+    {% else %}
+    <a href="{% url 'login' %}">Conectarse</a>
+    {% endif %}
+</div>
+{% endblock content %}

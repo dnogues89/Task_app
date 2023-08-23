@@ -6,8 +6,8 @@
     <div>
         <div >
             <h1>Hola {{request.user|title}}</h1>
-            <u><a href="{% url 'pagos_preventa' %}"><h3 style="margin-right: 20px; display: flex;">Preventas </h3></a></u>
-            <h3 style="margin:0">{{preventa}} Total aplicado ${{monto_aprobado}}</h3> 
+            <u><a href="{% url 'pagos_preventa' %}"><h3 style="margin-right: 20px; display: flex;">Atras</h3></a></u>
+            <h6 style="margin:0"><u>Aprobado:</u> ${{monto_aprobado|default:"0"|intcomma:2}} | <u>Pendiende:</u> ${{monto_pendiente|default:"0"|intcomma:2}} | <u>Rechazado:</u> ${{monto_rechazado|default:"0"|intcomma:2}}</h6> 
 
         </div>
     </div>
@@ -20,24 +20,26 @@
 
 </div>
 
+<div id="search-add-wraper">
+    <form method="GET" style="margin-top: 3px; display:flex;">
+        <input type="text" name="search-area" value="{{search_input}}">
+        <input class= 'button' type="submit" value="Buscar">
+        
+    </form>
+    <a id="add-link" href="{% url 'crear-pago' %}">&#x2b;</a>
+    
+</div>
 
-<!-- <a href="{% url 'crear-tarea' %}">Crear Tarea</a>
-<a href="{% url 'crear-preventa' %}">Crear Preventa</a>
-
-<form method="GET">
-    <input type="text" name="search-area" value="{{search_input}}">
-    <input type="submit" value="Buscar">
-</form> -->
 
 <div class="task-items-wraper">
     {% for pago in pagos %}
         <div class="task-wraper">
-            {% if pago.estado == 'Aprobado' %}
+            {% if pago.estado == '2Aprobado' %}
                 <div class="task-title">
                     <div class="task-complete-icon"></div>
                     <i><a href="{% url 'actualizar-pago' pk=pago.id %}">Comprobante: {{pago.numero_comprobante}} | ${{pago.monto|intcomma:2}} - Aprobado</a></i>
                 </div>
-            {% elif pago.estado == 'Rechazado' %}
+            {% elif pago.estado == '3Rechazado' %}
                 <div class="task-title">
                     <div class="task-rejected-icon"></div>
                     <s><a href="{% url 'actualizar-pago' pk=pago.id %}">Comprobante: {{pago.numero_comprobante}}</s> | ${{pago.monto|intcomma:2}} - Rechazado</a>
@@ -53,7 +55,7 @@
         </div>
 
     {% empty %}
-    <h3>No hay pago</h3>
+    <h3>No hay pagos Registrados</h3>
     {% endfor %}
 </div>
 
