@@ -1,10 +1,11 @@
 
 from tareas.models import Preventa, User, Tareas
+from pagos.models import Pago
 from tareas.asignacion_tareas import AsignacionTareas
 from django.db.models import Q
 
 #api
-from api.serializer import PreventaSerializer, TareasSerializer
+from api.serializer import PreventaSerializer, TareasSerializer, PagoSerializer
 from rest_framework import viewsets
 
 from django.http import Http404
@@ -21,6 +22,7 @@ class TareasSerializerViewset(viewsets.ModelViewSet):
     def list(self, requests):        
         # try:
         data = requests.data
+        print(data)
         try:
             user = Preventa.objects.get(preventa=data['preventa'])
             preventa = user.id
@@ -65,3 +67,24 @@ class PreventaSerializerViewSet(viewsets.ModelViewSet):
         except:
             return Response('no se creo la preventa')
     
+
+class PagoSerializerViewset(viewsets.ModelViewSet):
+    queryset = Pago.objects.all()
+    serializer_class = PagoSerializer
+    
+    #Enviar al endpoint una preventa valida
+    def list(self, requests):        
+        # try:
+        data = requests.data
+        print(requests.__dict__)
+        print(data)
+        try:
+            user = Preventa.objects.get(preventa=data['preventa'])
+            print(user)
+            preventa = user.id
+            queryset = Pago.objects.filter(preventa = preventa)
+            serializer = PagoSerializer(queryset, many=True)
+            return Response(serializer.data)
+        except:
+            serializer = PagoSerializer(self.queryset, many=True)
+            return Response(serializer.data)
