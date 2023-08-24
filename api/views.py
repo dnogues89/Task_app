@@ -74,17 +74,12 @@ class PagoSerializerViewset(viewsets.ModelViewSet):
     
     #Enviar al endpoint una preventa valida
     def list(self, requests):        
-        # try:
         data = requests.data
-        print(requests.__dict__)
-        print(data)
         try:
-            user = Preventa.objects.get(preventa=data['preventa'])
-            print(user)
-            preventa = user.id
-            queryset = Pago.objects.filter(preventa = preventa)
+            preventa = Preventa.objects.get(preventa=data['preventa'])
+            print(preventa)
+            queryset = Pago.objects.filter(preventa= preventa)
             serializer = PagoSerializer(queryset, many=True)
             return Response(serializer.data)
         except:
-            serializer = PagoSerializer(self.queryset, many=True)
-            return Response(serializer.data)
+            return Response("Preventa No valida")
