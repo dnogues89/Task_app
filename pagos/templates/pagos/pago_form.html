@@ -1,6 +1,8 @@
 {% extends 'tareas/base.html' %}
 {% block content %}
 
+
+
 <div class="header-bar">
     <a href="{% url 'pagos_preventa' %}">&#8592; Atras</a>
     
@@ -15,7 +17,18 @@
         <!-- {{form.as_p}} -->
         <li>Preventa: {{form.preventa}}</li>
         <p></p>
-        <li>CUIT/CUIL del Depositante: {{form.depositante_cuit}}</li>
+
+
+        <li>Depositante difiere del titular? <input type="checkbox" id="mostrar_depositante_cuit" name="mostrar_depositante_cuit"> </li>
+        
+        
+        <div id="campo_depositante_cuit" style="display:none;">
+            <li>DNI / CUIT / CUIL de Titular o CO-Titular de cuenta:</li>
+            {{ form.depositante_cuit }}
+        </div>
+
+
+
         <p></p>
         <li>Numero Comprobante: {{form.numero_comprobante}}</li>
         <p></p>
@@ -36,5 +49,17 @@
     </form>
     
 </div>
+<script>
+    var mostrarCheckbox = document.getElementById("mostrar_depositante_cuit");
+    var campoDepositanteCuit = document.getElementById("campo_depositante_cuit");
+
+    mostrarCheckbox.addEventListener("change", function () {
+        if (mostrarCheckbox.checked) {
+            campoDepositanteCuit.style.display = "block";
+        } else {
+            campoDepositanteCuit.style.display = "none";
+        }
+    });
+</script>
 
 {% endblock content %}
