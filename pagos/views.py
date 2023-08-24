@@ -94,6 +94,7 @@ class ActualizarPago(LoginRequiredMixin, UpdateView):
     
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         pago = form.save(commit=False)
-        pago.estado = '1Pendiente'
+        if pago.estado == '3Rechazado':    
+            pago.estado = '1Pendiente'
         pago.save()
         return super().form_valid(form)
