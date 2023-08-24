@@ -84,6 +84,14 @@ class ActualizarPago(LoginRequiredMixin, UpdateView):
     form_class= PagoForm
     success_url = reverse_lazy('pagos_preventa')
     
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        # Obtener el usuario actual
+        user = self.request.user
+        # Filtrar las preventas asignadas al usuario actual
+        form.fields['preventa'].queryset = Preventa.objects.filter(user=user)
+        return form
+    
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         pago = form.save(commit=False)
         pago.estado = '1Pendiente'
