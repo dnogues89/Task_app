@@ -11,8 +11,8 @@ from django.http import HttpResponseRedirect
 #auth
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-def home(request):
-    return render(request,'pagos/home.html')
+# def home(request):
+#     return render(request,'pagos/home.html')
 
 # Create your views here.
 class ListaPreventas(LoginRequiredMixin,ListView):
