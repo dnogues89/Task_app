@@ -78,3 +78,14 @@ class CrearPago(LoginRequiredMixin, CreateView):
         pago.user = user
         pago.save()
         return HttpResponseRedirect(self.success_url)
+    
+class ActualizarPago(LoginRequiredMixin, UpdateView):
+    model = Pago
+    form_class= PagoForm
+    success_url = reverse_lazy('pagos_preventa')
+    
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        pago = form.save(commit=False)
+        pago.estado = '1Pendiente'
+        pago.save()
+        return super().form_valid(form)

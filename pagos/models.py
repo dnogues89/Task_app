@@ -19,6 +19,7 @@ class Pago(models.Model):
     #choices =  #Opciones de pago a validar.
     #tipo de pago con las opciones.
     #Datos del depositante (cuil o cuit)
+    depositante_cuit = models.IntegerField(verbose_name='Datos Depositante')
     monto = models.IntegerField()
     comprobante = models.ImageField(upload_to=save_path)
     motivo_rechazo = models.TextField(null=True,blank=True, max_length=1000)
