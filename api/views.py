@@ -1,7 +1,7 @@
 
 from tareas.models import Preventa, User, Tareas
 from pagos.models import Pago
-from tareas.asignacion_tareas import AsignacionTareas
+from tareas import asignacion_tareas
 from django.db.models import Q
 
 #api
@@ -12,6 +12,7 @@ from django.http import Http404
 from rest_framework.views import APIView
 
 from rest_framework.response import Response
+
 
 
 class TareasSerializerViewset(viewsets.ModelViewSet):
@@ -53,15 +54,15 @@ class PreventaSerializerViewSet(viewsets.ModelViewSet):
                 user = User.objects.create(username = data['user'], password='abcd1234')
                 user.set_password('abcd1234')
                 user.save()
-                AsignacionTareas.crear_tareas_usuario(user)
+                asignacion_tareas.crear_tareas_usuario(user)
 
             nueva_preventa = Preventa.objects.create(preventa=data['preventa'],tipo_venta=data['tipo_venta'],user=user)
             nueva_preventa.save()
             preventa = Preventa.objects.get(preventa = data['preventa'])
             if data['tipo_venta'] == 'Contado':
-                AsignacionTareas.crear_tareas_preventa_contado(user,preventa)
+                asignacion_tareas.crear_tareas_preventa_contado(user,preventa)
             else:
-                AsignacionTareas.crear_tareas_preventa_financiado(user,preventa)
+                asignacion_tareas.crear_tareas_preventa_financiado(user,preventa)
             return Response(data)    
 
         except:

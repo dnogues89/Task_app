@@ -82,7 +82,7 @@ class Tareas(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
     titulo = models.CharField(max_length=200)
     descripcion = models.TextField(null=True,blank=True)
-    descarga = models.CharField(max_length=30,null=True,blank=True)
+    descarga = models.CharField(max_length=500,null=True,blank=True)
     adjunto = models.FileField(blank=True,null=True,upload_to=save_path)
     completo = models.BooleanField(default=False)
     actualizado = models.DateField(auto_now=True) # fecha de actualizacion para 
@@ -144,9 +144,15 @@ class TareasForm(forms.ModelForm):
         
 class TipoTarea(models.Model):
     tipo = models.CharField(max_length=200)
+    
+    def __str__(self) -> str:
+        return self.tipo
 
 class AsignacionTareas(models.Model):
     tipo = models.ForeignKey(TipoTarea, on_delete=models.CASCADE)
     titulo = models.CharField(max_length=250)
-    descipcion = models.TextField()
-    descarga = models.FileField(upload_to='archivos_para_descargar')
+    descripcion = models.TextField(null=True,blank=True)
+    descarga = models.FileField(upload_to='archivos_para_descargar',null=True,blank=True)
+    
+    def __str__(self) -> str:
+        return self.titulo
