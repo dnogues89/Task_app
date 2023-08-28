@@ -23,7 +23,7 @@ from .asignacion_tareas import AsignacionTareas
 
 #Descargar archivos
 def download_file(request, file_name):
-    file_path = os.path.join(settings.MEDIA_ROOT, 'archivos_para_descargar' ,file_name)
+    file_path = os.path.join(settings.MEDIA_ROOT, 'archivos_para_descargar', file_name)
     if os.path.exists(file_path):
         with open(file_path, 'rb') as file:
             response = HttpResponse(file.read(), content_type='application/octet-stream')
@@ -105,6 +105,16 @@ class ActualizarTarea(LoginRequiredMixin, UpdateView):
     model = Tareas
     form_class = TareasForm
     success_url = reverse_lazy('tareas')
+    context_object_name = 'tarea'
+    
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context =super().get_context_data(**kwargs)
+        try:
+            context['link'] = str(context['tarea'].descarga).split('/')[-1]
+        except:
+            context['link']= 'sin link'
+
+        return context
     
 
     
