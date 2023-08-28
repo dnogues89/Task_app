@@ -82,7 +82,7 @@ class Tareas(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
     titulo = models.CharField(max_length=200)
     descripcion = models.TextField(null=True,blank=True)
-    descarga = models.CharField(max_length=500,null=True,blank=True)
+    descarga = models.FileField(null=True,blank=True)
     adjunto = models.FileField(blank=True,null=True,upload_to=save_path)
     completo = models.BooleanField(default=False)
     actualizado = models.DateField(auto_now=True) # fecha de actualizacion para 
@@ -133,7 +133,7 @@ class TareasForm(forms.ModelForm):
     user = forms.ModelChoiceField(required=False,queryset=User.objects.all(), disabled=True,label="Usuario")
     titulo = forms.CharField(required=False,disabled=True,label='Tarea')
     descripcion = forms.CharField(required=False, widget=forms.Textarea(attrs={'readonly': 'readonly'}),label="Descripcion Tarea")
-    descarga = forms.CharField(required=False, disabled=False, label='Descargar archivo para firmar')
+    descarga = forms.FileField(required=False, disabled=False, label='Descargar archivo para firmar')
     adjunto = forms.FileField(required=False,label='Adjuntar Archivo')
     completo = forms.BooleanField(required=False,label='Tarea Realizada')
     pv = forms.ModelChoiceField(required=False,queryset=Preventa.objects.all(), disabled=True,label="Preventa")
