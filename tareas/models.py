@@ -142,3 +142,11 @@ class TareasForm(forms.ModelForm):
         model = Tareas
         fields = "__all__"
         
+class TipoTarea(models.Model):
+    tipo = models.CharField(max_length=200)
+
+class AsignacionTareas(models.Model):
+    tipo = models.ForeignKey(TipoTarea, on_delete=models.CASCADE)
+    titulo = models.CharField(max_length=250)
+    descipcion = models.TextField()
+    

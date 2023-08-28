@@ -79,3 +79,6 @@ class AsignacionTareas():
         tarea = Tareas.objects.create(user = usuario, titulo = 'Declaracion Jurada Persona Fisica Socio',descripcion='Descargar el archivo, debe firmar y adjuntar (Socio para persona juridica)',pv=preventa,descarga='DDJJ PERSONA FISICA 2023.doc').save()
         tarea = Tareas.objects.create(user = usuario, titulo = 'Declaracion Jurada Persona Expuesta Politicamente Socio',descripcion='Descargar el archivo, debe firmar y adjuntar (Socio para persona juridica). RECORDAR LA FIRMA EN AMBAS PAGINAS',pv=preventa,descarga='PEP 2023.doc').save()
         tarea = Tareas.objects.create(user = usuario, titulo = 'Socio Constancia de CUIL/CUIT',descripcion='Constancia de CUIT/CUIL Socio',pv=preventa,descarga='').save()
+        
+    def crear_tarea(usuario,preventa,titulo,descripcion,descarga):
+        tarea = Tareas.objects.create(user=usuario,preventa=preventa,titulo=titulo,descripcion=descripcion,descarga=descarga).save()
