@@ -149,4 +149,4 @@ class AsignacionTareas(models.Model):
     tipo = models.ForeignKey(TipoTarea, on_delete=models.CASCADE)
     titulo = models.CharField(max_length=250)
     descipcion = models.TextField()
-    
+    descarga = models.FileField(upload_to='archivos_para_descargar')
