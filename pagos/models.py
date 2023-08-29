@@ -17,7 +17,7 @@ def save_path(instance,filename):
 # Create your models here.
 class Pago(models.Model):
     preventa = models.ForeignKey(Preventa, on_delete=models.CASCADE, blank=True, null=True)
-    numero_comprobante = models.CharField(max_length=50)
+    numero_comprobante = models.CharField(max_length=50,unique=True)
     #choices =  #Opciones de pago a validar.
     #tipo de pago con las opciones.
     #Datos del depositante (cuil o cuit)

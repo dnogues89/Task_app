@@ -11,6 +11,7 @@
 
 
 <div class="card-body">
+    
     <h1>Comprobante</h1>
     <form enctype="multipart/form-data" method="POST">
         {% csrf_token %}
@@ -23,8 +24,10 @@
         
         
         <div id="campo_depositante_cuit" style="display:none;">
-            <li>DNI / CUIT / CUIL de Titular o CO-Titular de cuenta:</li>
-            {{ form.depositante_cuit }}
+            <p></p>
+            <li>DNI / CUIT / CUIL de Titular o CO-Titular de cuenta: {{ form.depositante_cuit }}</li>
+            <p></p>
+            
         </div>
 
 
@@ -41,11 +44,21 @@
         <p></p>
         {% endif %}
         <p></p>
-        <input class="button" type="submit" value="Guardar">
         
-        {% if preventa.id %}
-            <a href="{% url 'lista-pagos-preventa' pk=preventa.id %}" class="button">Pagos de la preventa</a>    
-        {% endif %}    
+
+        
+        <div id="notificacion" style="display:block;">
+            <hr>
+            <h4>IMPORTANTE!</h4>
+            <p>Por favor guardar el deposito original junto con la documentacion ya que va a ser solicitado en administracion.</p>
+            <p>En caso de extravio deberá hacer una denuncia policial, por lo que recomendamos tenerlo en una carpeta con toda la documentacion</p>
+            <hr>
+        </div>
+        <p>Acepto las condiciones <input type="checkbox" id="cerrar_notificacion" name="cerrar_notificacion"></p>
+
+        <input id="boton_guardar" style="display: none;" class="button" type="submit" value="Guardar">
+        
+        
     </form>
     
 </div>
@@ -58,6 +71,19 @@
             campoDepositanteCuit.style.display = "block";
         } else {
             campoDepositanteCuit.style.display = "none";
+        }
+    });
+    var mostrarCheckbox = document.getElementById("cerrar_notificacion");
+    var notificacion = document.getElementById("notificacion");
+    var boton_guardar=document.getElementById("boton_guardar")
+
+    mostrarCheckbox.addEventListener("change", function () {
+        if (mostrarCheckbox.checked) {
+            notificacion.style.display = "none";
+            boton_guardar.style.display = "block";
+        } else {
+            notificacion.style.display = "block";
+            boton_guardar.style.display = "none";
         }
     });
 </script>

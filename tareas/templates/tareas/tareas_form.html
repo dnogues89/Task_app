@@ -1,6 +1,7 @@
 {% extends 'tareas/base.html' %}
 {% block content %}
 
+
 <div class="header-bar">
     <a href="{% url 'tareas' %}">&#8592; Atras</a>
 </div>
@@ -8,19 +9,23 @@
 <div class="card-body">
     <form method="POST" action="" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
+
+        <li>Tarea: {{form.titulo.value}}</li>
+        <p></p>
+        <li>Descripcion de la tarea:</li>
+        <p>{{form.descripcion.value}}</p>
+        <p></p>
+        <li>Adjunto: {{form.adjunto}}</li>
+        <p>{{form.adjunto}}</p>
+        <p></p>
+    
         <input class="button" type="submit" value="Guardar">
         {% if form.descarga.value != "" and form.descarga.value is not none %}
-            <a class="button" href="{% url 'download_file' form.descarga.value %}">Descargar</a>
+            <a class="button" href="{% url 'download_file' link %}">Descargar</a>
         {% endif %}
     </form>
 </div>
 
-<script>
-    function descargarArchivo(url) {
-        window.location.href = url;
-    }
-</script>
 
 
 {% endblock content %}
