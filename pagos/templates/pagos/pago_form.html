@@ -73,12 +73,12 @@
             campoDepositanteCuit.style.display = "none";
         }
     });
-    var mostrarCheckbox = document.getElementById("cerrar_notificacion");
+    var mostrarCheckbox_notificacion = document.getElementById("cerrar_notificacion");
     var notificacion = document.getElementById("notificacion");
     var boton_guardar=document.getElementById("boton_guardar")
 
-    mostrarCheckbox.addEventListener("change", function () {
-        if (mostrarCheckbox.checked) {
+    mostrarCheckbox_notificacion.addEventListener("change", function () {
+        if (mostrarCheckbox_notificacion.checked) {
             notificacion.style.display = "none";
             boton_guardar.style.display = "block";
         } else {
