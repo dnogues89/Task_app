@@ -4,21 +4,22 @@ def crear_tareas_usuario(usuario):
     tipo_tarea = TipoTarea.objects.get(tipo='tareas por usuario')
     tareas = AsignacionTareas.objects.filter(tipo=tipo_tarea)
     for tarea in tareas:
-        try:
-            descarga = tarea.descarga.url
-        except:
-            descarga = ''
         objeto = Tareas.objects.create(user = usuario, titulo = tarea.titulo, descripcion=tarea.descripcion, descarga=tarea.descarga).save()
 
 def crear_tareas_preventa_general(usuario,preventa):
-    tarea = Tareas.objects.create(user = usuario, titulo = 'Titulo',descripcion='Adjuntar titulo NO CAT',pv=preventa,descarga='').save()
-    tarea = Tareas.objects.create(user = usuario, titulo = 'Patente',descripcion='Adjuntar patente',pv=preventa,descarga='').save()
-    tarea = Tareas.objects.create(user = usuario, titulo = 'Cedula Verde Frente',descripcion='Adjuntar Cedula Verde frente',pv=preventa,descarga='').save()
-    tarea = Tareas.objects.create(user = usuario, titulo = 'Cedula Verde Dorso',descripcion='Adjuntar Cedula Verde Dorso',pv=preventa,descarga='').save()
+    tipo_tarea = TipoTarea.objects.get(tipo='preventa general')
+    tareas = AsignacionTareas.objects.filter(tipo=tipo_tarea)
+    for tarea in tareas:
+        objeto = Tareas.objects.create(user = usuario, titulo = tarea.titulo, descripcion=tarea.descripcion, descarga=tarea.descarga, pv=preventa).save()
+
 
 def crear_tarea_retira_cliente_final(usuario,preventa):
-    tarea = Tareas.objects.create(user = usuario, titulo = 'Autorizacion retira titular',descripcion='Descargar archivo y adjuntar firmado', descarga="autorizacion", pv=preventa).save()
-    tarea = Tareas.objects.create(user = usuario, titulo = 'Nota de turno',descripcion='Debe estar firmada por el titular. Archivo enviado por la administracion para firmar', pv=preventa).save()
+    tipo_tarea = TipoTarea.objects.get(tipo='retira cliente final')
+    tareas = AsignacionTareas.objects.filter(tipo=tipo_tarea)
+    for tarea in tareas:
+        objeto = Tareas.objects.create(user = usuario, titulo = tarea.titulo, descripcion=tarea.descripcion, descarga=tarea.descarga, pv=preventa).save()
+    # tarea = Tareas.objects.create(user = usuario, titulo = 'Autorizacion retira titular',descripcion='Descargar archivo y adjuntar firmado', descarga="autorizacion", pv=preventa).save()
+    # tarea = Tareas.objects.create(user = usuario, titulo = 'Nota de turno',descripcion='Debe estar firmada por el titular. Archivo enviado por la administracion para firmar', pv=preventa).save()
     
 def crear_tareas_retiro_individuo(usuario,preventa):
     tarea = Tareas.objects.create(user = usuario, titulo = 'DNI Frente retira unidad',descripcion='Foto frente dni del que retira',pv=preventa).save()
