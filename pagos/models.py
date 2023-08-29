@@ -17,10 +17,17 @@ def save_path(instance,filename):
 # Create your models here.
 class Pago(models.Model):
     preventa = models.ForeignKey(Preventa, on_delete=models.CASCADE, blank=True, null=True)
+    usuario = models.CharField(max_length=30, blank=True, null=True)
+    
+    fecha_deposito =models.DateField()
+    choices = [('SICE Debito','SICE Debito'),('SICE Cheque','SICE Cheque'),('SICE Efectivo','SICE Efectivo'),('Efectivo','Efectivo'),('Transferencia','Transferencia'),('Cheque','Cheque')]
+    tipo_deposito = models.CharField(choices=choices)
+    choices = [('Frances','Frances'),('Provincia','Provincia'),('Santander','Santander')]
+    banco_destino = models.CharField(choices=choices)
+    choices = [('Recaudadora Frances','Recaudadora Frances'),('VW Credit 3046','VW Credit 3046'),('Espasa','Espasa')]
+    cuenta = models.CharField(choices=choices)
+    
     numero_comprobante = models.CharField(max_length=50,unique=True)
-    #choices =  #Opciones de pago a validar.
-    #tipo de pago con las opciones.
-    #Datos del depositante (cuil o cuit)
     depositante_cuit = models.IntegerField(verbose_name='Datos Depositante',blank=True,null=True)
     monto = models.IntegerField()
     comprobante = models.ImageField(upload_to=save_path)
