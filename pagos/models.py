@@ -21,11 +21,11 @@ class Pago(models.Model):
     
     fecha_deposito =models.DateField()
     choices = [('SICE Debito','SICE Debito'),('SICE Cheque','SICE Cheque'),('SICE Efectivo','SICE Efectivo'),('Efectivo','Efectivo'),('Transferencia','Transferencia'),('Cheque','Cheque')]
-    tipo_deposito = models.CharField(choices=choices)
+    tipo_deposito = models.CharField(choices=choices, max_length=30)
     choices = [('Frances','Frances'),('Provincia','Provincia'),('Santander','Santander')]
-    banco_destino = models.CharField(choices=choices)
+    banco_destino = models.CharField(choices=choices, max_length=30)
     choices = [('Recaudadora Frances','Recaudadora Frances'),('VW Credit 3046','VW Credit 3046'),('Espasa','Espasa')]
-    cuenta = models.CharField(choices=choices)
+    cuenta = models.CharField(choices=choices, max_length=30)
     
     numero_comprobante = models.CharField(max_length=50,unique=True)
     depositante_cuit = models.IntegerField(verbose_name='Datos Depositante',blank=True,null=True)
