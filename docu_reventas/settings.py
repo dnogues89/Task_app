@@ -117,9 +117,6 @@ TIME_ZONE = 'America/Argentina/Buenos_Aires'
 
 USE_I18N = True
 
-DECIMAL_SEPARATOR = ','
-THOUSAND_SEPARATOR = '.'
-
 USE_TZ = True
 
 

@@ -6,7 +6,7 @@ from pagos.models import Pago, PagoFormAdmin
 
 # Register your models here.
 class PagoAdmin(admin.ModelAdmin):
-    list_display = ('preventa', 'numero_comprobante', 'monto','administracion', 'estado','carga_crm','acreditado', 'fecha_carga', 'fecha_aprobado')
+    list_display = ('preventa', 'numero_comprobante', 'precio_con_signo','administracion', 'estado','carga_crm','acreditado', 'fecha_carga', 'fecha_aprobado')
     search_fields = ('preventa', 'numero_comprobante', 'monto')
     list_filter = ['administracion','acreditado']
     date_hierarchy = 'fecha_carga'
@@ -14,6 +14,12 @@ class PagoAdmin(admin.ModelAdmin):
     exclude = ['fecha_aprobado',]
 
     form = PagoFormAdmin
+    
+    
+    def precio_con_signo(self, obj):
+        return "$ {:,.0f}".format(obj.monto).replace(",", ".")  # Formatea el precio con 2 decimales y separador de miles.
+    precio_con_signo.short_description = 'Precio con Signo'
+
     
 
     
