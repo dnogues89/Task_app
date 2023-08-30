@@ -49,15 +49,17 @@ class ListaPagosPreventa(LoginRequiredMixin, ListView):
         
         return context
 
-class ActualizarPago(LoginRequiredMixin, UpdateView):
-    model = Pago
-    fields = '__all__'
-    success_url = reverse_lazy('pagos_preventa')
+# class ActualizarPago(LoginRequiredMixin, UpdateView):
+#     model = Pago
+#     fields = '__all__'
+#     success_url = reverse_lazy('pagos_preventa')
     
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['pago_id'] = self.object.pk  # Pasar el ID de la preventa al contexto
-        return context
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['pago_id'] = self.object.pk  # Pasar el ID de la preventa al contexto
+#         # context['numero_preventa'] = 
+#         print(context)
+#         return context
     
 class CrearPago(LoginRequiredMixin, CreateView):
     model = Pago
@@ -83,6 +85,11 @@ class ActualizarPago(LoginRequiredMixin, UpdateView):
     model = Pago
     form_class= PagoForm
     success_url = reverse_lazy('pagos_preventa')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['numero_preventa'] = context['pago'].preventa
+        return context
     
     def get_form(self, form_class=None):
         form = super().get_form(form_class)

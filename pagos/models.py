@@ -36,10 +36,14 @@ class Pago(models.Model):
     comprobante = models.ImageField(upload_to=save_path)
     motivo_rechazo = models.TextField(null=True,blank=True, max_length=1000)
     choices = [('1Pendiente','Pendiente'),('2Aprobado','Aprobado'),('3Rechazado','Rechazado')]
+    administracion = models.CharField(choices=choices, max_length=30, blank=True,default='1Pendiente')
+    carga_crm = models.BooleanField(default=False,blank=True, null=True)
+    choices = [('1Pendiente','Pendiente'),('2Aprobado','Aprobado'),('3Rechazado','Rechazado')]
     estado = models.CharField(choices=choices, max_length=30, blank=True,default='1Pendiente')
     fecha_carga = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     fecha_aprobado = models.DateTimeField(blank=True, null=True)
     acreditado = models.BooleanField(default=False)
+    
     
     def __str__(self) -> str:
         return f'{self.preventa} | ${self.monto}'

@@ -14,7 +14,12 @@
     
     <h1>Comprobante</h1>
     <form enctype="multipart/form-data" method="POST">
+
         {% csrf_token %}
+        <!-- El formulario se muestra en caso que NO ESTE CARGADO EN EL CRM -->
+        {%if form.carga_crm.value == True %}
+
+        
         <!-- {{form.as_p}} -->
         <li>Preventa: {{form.preventa}}</li>
         <p></p>
@@ -66,6 +71,27 @@
 
         <input id="boton_guardar" style="display: none;" class="button" type="submit" value="Guardar">
         
+        {% else %}
+
+        <!-- Si el comprobante esta cargado, solo muestro los valores -->
+        <li>Preventa: {{numero_preventa}}</li>
+        <p></p>
+        <li>Fecha deposito: {{form.fecha_deposito.value}}</li>
+        <p></p>
+        <li>Tipo: {{form.tipo_deposito.value}}</li>
+        <p></p>
+        <li>Destino: {{form.banco_destino.value}}</li>
+        <p></p>
+        <li>Cuenta: {{form.cuenta.value}}</li>
+        <p></p>
+        <li>Numero Comprobante: {{form.numero_comprobante.value}}</li>
+        <p></p>
+        <li>Monto: {{form.monto.value}}</li>
+        <h6>Este comprobante ya esta dentro del sistema y no puede ser modificado.
+            <br>
+            En caso de querer modificarlo, por favor comunicarse con administración de ventas.
+        </h6>
+        {% endif %}
         
     </form>
     
