@@ -89,6 +89,9 @@ class ActualizarPago(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['numero_preventa'] = context['pago'].preventa
+        context['imagen'] = context['pago'].comprobante.url
+        # print(context['pago'].preventa.user.username)
+        # print(context)
         return context
     
     def get_form(self, form_class=None):
@@ -103,5 +106,6 @@ class ActualizarPago(LoginRequiredMixin, UpdateView):
         pago = form.save(commit=False)
         if pago.estado == '3Rechazado':    
             pago.estado = '1Pendiente'
+        pago.usuario = pago.preventa.user.username
         pago.save()
         return super().form_valid(form)

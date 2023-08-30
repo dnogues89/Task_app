@@ -67,6 +67,7 @@ class Pago(models.Model):
                     if self.estado == '3Rechazado':
                         self.estado == '1Pendiente'
                     
+                    
             except:
                 pass   
             

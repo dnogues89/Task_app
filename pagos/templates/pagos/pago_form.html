@@ -17,7 +17,7 @@
 
         {% csrf_token %}
         <!-- El formulario se muestra en caso que NO ESTE CARGADO EN EL CRM -->
-        {%if form.carga_crm.value == True %}
+        {%if form.carga_crm.value == False %}
 
         
         <!-- {{form.as_p}} -->
@@ -87,6 +87,11 @@
         <li>Numero Comprobante: {{form.numero_comprobante.value}}</li>
         <p></p>
         <li>Monto: {{form.monto.value}}</li>
+        <p></p>
+        <li>Comprobante:</li>
+        <div style="text-align: center;">
+            <img src="{{imagen}}" alt="" style="max-width: 200px; height: auto;">
+        </div>
         <h6>Este comprobante ya esta dentro del sistema y no puede ser modificado.
             <br>
             En caso de querer modificarlo, por favor comunicarse con administración de ventas.
