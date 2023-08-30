@@ -37,7 +37,7 @@ class Pago(models.Model):
     motivo_rechazo = models.TextField(null=True,blank=True, max_length=1000)
     choices = [('1Pendiente','Pendiente'),('2Aprobado','Aprobado'),('3Rechazado','Rechazado')]
     administracion = models.CharField(choices=choices, max_length=30, blank=True,default='1Pendiente')
-    carga_crm = models.BooleanField(default=False,blank=True, null=True)
+    carga_crm = models.BooleanField(default=False)
     choices = [('1Pendiente','Pendiente'),('2Aprobado','Aprobado'),('3Rechazado','Rechazado')]
     estado = models.CharField(choices=choices, max_length=30, blank=True,default='1Pendiente')
     fecha_carga = models.DateTimeField(auto_now_add=True, blank=True, null=True)
