@@ -1,6 +1,6 @@
 {% extends 'tareas/base.html' %}
 {% block content %}
-
+{% load tz %}
 
 
 <div class="header-bar">
@@ -32,6 +32,14 @@
 
 
 
+        <p></p>
+        <li>Fecha deposito: {{form.fecha_deposito}}</li>
+        <p></p>
+        <li>Tipo: {{form.tipo_deposito}}</li>
+        <p></p>
+        <li>Destino: {{form.banco_destino}}</li>
+        <p></p>
+        <li>Cuenta: {{form.cuenta}}</li>
         <p></p>
         <li>Numero Comprobante: {{form.numero_comprobante}}</li>
         <p></p>

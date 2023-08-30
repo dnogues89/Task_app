@@ -1,6 +1,9 @@
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Mapping, Optional, Tuple, Type, Union
+from django.core.files.base import File
 from django.db import models
 from django import forms
+from django.db.models.base import Model
+from django.forms.utils import ErrorList
 from tareas.models import Preventa
 from django.utils import timezone
 from django.utils.html import format_html
@@ -75,9 +78,13 @@ class Pago(models.Model):
         verbose_name_plural = 'pagos'
         
 class PagoForm(forms.ModelForm):
+    fecha_deposito = forms.DateField(label='Fecha de deposito', widget=forms.TextInput(attrs={'type': 'date','class': 'form-control  datetimepicker'}), required=True)
+    
     class Meta:
         model = Pago
         fields = '__all__'
+    
+    
         
 
 class ImageWidget(forms.ClearableFileInput):
