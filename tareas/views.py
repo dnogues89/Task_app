@@ -14,10 +14,10 @@ from django.urls import reverse_lazy
 
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import login
 
-from .models import Tareas, Preventa, TareasForm, PreventaForm
+from .models import Tareas, Preventa, TareasForm, PreventaForm, User
 
 from .asignacion_tareas import AsignacionTareas
 
@@ -39,7 +39,14 @@ class MiLoginView(LoginView):
     fields = '__all__'
     redirect_authenticated_user = True
     
+    def form_valid(self, form: AuthenticationForm) -> HttpResponse:
+        user = User.objects.get(username = form.data['username'])
+        self.last_login = user.last_login
+        return super().form_valid(form)
+    
     def get_success_url(self) -> str:
+        if self.last_login == None:
+            return reverse_lazy('password')
         return reverse_lazy('home')
 
 class Registrarse(FormView):

@@ -112,7 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 USE_THOUSAND_SEPARATOR = True
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-mx'
 
 TIME_ZONE = 'America/Argentina/Buenos_Aires'
 

@@ -7,6 +7,7 @@ from django.forms.utils import ErrorList
 from tareas.models import Preventa
 from django.utils import timezone
 from django.utils.html import format_html
+
 import os
 
 def save_path(instance,filename):
@@ -18,6 +19,9 @@ def save_path(instance,filename):
 
 
 # Create your models here.
+
+
+
 class Pago(models.Model):
     preventa = models.ForeignKey(Preventa, on_delete=models.CASCADE, blank=True, null=True)
     usuario = models.CharField(max_length=30, blank=True, null=True)

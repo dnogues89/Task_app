@@ -19,9 +19,11 @@ from django.urls import path,include
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('',views.home,name='home'),
+    path('admin/password',views.PasswordsChangeView.as_view(template_name='pagos/password_reset.html'),name='password'),
     path('admin/', admin.site.urls),
     path('tareas/',include('tareas.urls')),
     path('api/', include('api.urls')),
