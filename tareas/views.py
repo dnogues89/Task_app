@@ -1,6 +1,6 @@
 from typing import Any, Dict, Type
 import os
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.conf import settings
 
 from django.db.models.query import QuerySet
@@ -20,6 +20,8 @@ from django.contrib.auth import login
 from .models import Tareas, Preventa, TareasForm, PreventaForm, User
 
 from .asignacion_tareas import AsignacionTareas
+
+from django.views.decorators.csrf import csrf_exempt
 
 #Descargar archivos
 def download_file(request, file_name):
@@ -48,6 +50,7 @@ class MiLoginView(LoginView):
         if self.last_login == None:
             return reverse_lazy('password')
         return reverse_lazy('home')
+    
 
 class Registrarse(FormView):
     template_name = 'tareas/registrarse.html'
