@@ -6,7 +6,7 @@
 </div>
 
 <div class="card-body">
-    <h2>{{form.preventa.value}}</h2>
+    <h2>{{form.preventa.value}} | {{form.modelo.value}}</h2>
     <form method="POST">
         {% csrf_token %}
         <li>Tipo de venta: {{form.tipo_venta}}</li>

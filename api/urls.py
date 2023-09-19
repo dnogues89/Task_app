@@ -1,15 +1,15 @@
-from django.urls import path,include
-from rest_framework import routers
+from django.urls import path
 
-from .views import PreventaSerializerViewSet, TareasSerializerViewset,PagoSerializerViewset
-
-routers = routers.DefaultRouter()
-routers.register(r'preventas',PreventaSerializerViewSet)
-routers.register(r'tareas',TareasSerializerViewset)
-routers.register(r'pagos',PagoSerializerViewset)
+#media
+from django.conf import settings
+from django.conf.urls.static import static
+from . import views
 
 urlpatterns = [
-    #Api
-    path('', include(routers.urls))
-    
+    #Vistas para el login
+    path('preventas/', views.get_preventas, name='get-preventas'),
+
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

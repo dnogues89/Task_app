@@ -17,7 +17,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import login
 
-from .models import Tareas, Preventa, TareasForm, PreventaForm, User
+from .models import Tareas, Preventa, User
 
 from . import asignacion_tareas
 
@@ -62,7 +62,7 @@ class Registrarse(FormView):
         user = form.save()
         if user is not None:
             login(self.request,user)
-            AsignacionTareas.crear_tareas_usuario(user)
+            asignacion_tareas.crear_tareas_usuario(user)
         return super(Registrarse, self).form_valid(form)
     
     def get(self, *args, **kwargs):
@@ -113,9 +113,9 @@ class CrearTarea(LoginRequiredMixin, CreateView):
     
 class ActualizarTarea(LoginRequiredMixin, UpdateView):
     model = Tareas
-    form_class = TareasForm
     success_url = reverse_lazy('tareas')
     context_object_name = 'tarea'
+    fields = '__all__'
     
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context =super().get_context_data(**kwargs)
@@ -169,8 +169,8 @@ class CrearPreventa(LoginRequiredMixin, CreateView):
 
 class ActualizarPreventa(LoginRequiredMixin, UpdateView):
     model = Preventa
-    form_class=PreventaForm
     success_url = reverse_lazy('preventa')
+    fields = '__all__'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

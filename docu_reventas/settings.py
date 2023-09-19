@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'tareas.apps.TareasConfig',
     'django.contrib.humanize',
-    'rest_framework',
     'pagos',
 
 ]

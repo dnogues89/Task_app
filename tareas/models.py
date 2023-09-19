@@ -34,6 +34,8 @@ class Vendedor(models.Model):
 
 class Preventa(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL,null=True,blank=True)
+    modelo = models.CharField(max_length=100, blank=True, null=True)
+    fecha_preventa = models.DateField()
     preventa = models.CharField(max_length=8, help_text="Ejemplo 12345/1",unique=True)
     choises = [('Contado','Contado'),('Financiado','Financiado')]
     tipo_venta = models.CharField(max_length= 15, choices=choises) # agregar tareas a ==l tipo de venta, no lo hace CARVAJAL desde la API!
@@ -55,26 +57,26 @@ class Preventa(models.Model):
     def __str__(self) -> str:
         return self.preventa
 
-class PreventaForm(forms.ModelForm):
-    user = forms.ModelChoiceField(required=False,queryset=User.objects.all(), disabled=True,label="Usuario")
-    preventa = forms.CharField(required=False,disabled=True,label='Numero de Preventa')
-    choises = [('Persona Fisica','Persona Fisica'),('Persona Juridica','Persona Juridica')]
-    tipo_cliente = forms.ChoiceField(choices= choises, required=False, disabled=False, label='Tipo de cliente final')
-    choises = [('Soltero/a','Soltero/a'),('Casado/a','Casado/a')] 
-    estado_civil = forms.ChoiceField(choices= choises, required=False, disabled=False, label='Estado Civil TITULAR')
-    choises = [('No','No'),('Si','Si')]
-    co_titular = forms.ChoiceField(choices= choises, required=False, disabled=False, label='Co-Titular')
-    cedulas_azules = forms.IntegerField(required=False, label='Cantidad cedulas azules. En numero')
-    socios = forms.IntegerField(required=False,label='Si es SS o SH indicar cantidad de socios involucrados')
-    choises = [('',''),('Transportista','Transportista'),('Individuo','Individuo'),('Titular','Titular')]
-    retira_unidad = forms.ChoiceField(choices= choises, required=False, disabled=False, label='Quien retira la unidad?')
-    # vendedor = forms.ModelChoiceField(required=False,queryset=Vendedor.objects.all(), disabled=True)
-    completo = forms.BooleanField(required=False, label='Operacion terminada.')
+# class PreventaForm(forms.ModelForm):
+#     user = forms.ModelChoiceField(required=False,queryset=User.objects.all(), disabled=True,label="Usuario")
+#     preventa = forms.CharField(required=False,disabled=True,label='Numero de Preventa')
+#     choises = [('Persona Fisica','Persona Fisica'),('Persona Juridica','Persona Juridica')]
+#     tipo_cliente = forms.ChoiceField(choices= choises, required=False, disabled=False, label='Tipo de cliente final')
+#     choises = [('Soltero/a','Soltero/a'),('Casado/a','Casado/a')] 
+#     estado_civil = forms.ChoiceField(choices= choises, required=False, disabled=False, label='Estado Civil TITULAR')
+#     choises = [('No','No'),('Si','Si')]
+#     co_titular = forms.ChoiceField(choices= choises, required=False, disabled=False, label='Co-Titular')
+#     cedulas_azules = forms.IntegerField(required=False, label='Cantidad cedulas azules. En numero')
+#     socios = forms.IntegerField(required=False,label='Si es SS o SH indicar cantidad de socios involucrados')
+#     choises = [('',''),('Transportista','Transportista'),('Individuo','Individuo'),('Titular','Titular')]
+#     retira_unidad = forms.ChoiceField(choices= choises, required=False, disabled=False, label='Quien retira la unidad?')
+#     # vendedor = forms.ModelChoiceField(required=False,queryset=Vendedor.objects.all(), disabled=True)
+#     completo = forms.BooleanField(required=False, label='Operacion terminada.')
  
     
-    class Meta:
-        model = Preventa
-        fields = '__all__'
+#     class Meta:
+#         model = Preventa
+#         fields = '__all__'
     
     
     
@@ -129,18 +131,18 @@ class Tareas(models.Model):
         verbose_name = 'tarea'
         verbose_name_plural = 'tareas'
     
-class TareasForm(forms.ModelForm):
-    user = forms.ModelChoiceField(required=False,queryset=User.objects.all(), disabled=True,label="Usuario")
-    titulo = forms.CharField(required=False,disabled=True,label='Tarea')
-    descripcion = forms.CharField(required=False, widget=forms.Textarea(attrs={'readonly': 'readonly'}),label="Descripcion Tarea")
-    descarga = forms.FileField(required=False, disabled=False, label='Descargar archivo para firmar')
-    adjunto = forms.FileField(required=False,label='Adjuntar Archivo')
-    completo = forms.BooleanField(required=False,label='Tarea Realizada')
-    pv = forms.ModelChoiceField(required=False,queryset=Preventa.objects.all(), disabled=True,label="Preventa")
+# class TareasForm(forms.ModelForm):
+#     user = forms.ModelChoiceField(required=False,queryset=User.objects.all(), disabled=True,label="Usuario")
+#     titulo = forms.CharField(required=False,disabled=True,label='Tarea')
+#     descripcion = forms.CharField(required=False, widget=forms.Textarea(attrs={'readonly': 'readonly'}),label="Descripcion Tarea")
+#     descarga = forms.FileField(required=False, disabled=False, label='Descargar archivo para firmar')
+#     adjunto = forms.FileField(required=False,label='Adjuntar Archivo')
+#     completo = forms.BooleanField(required=False,label='Tarea Realizada')
+#     pv = forms.ModelChoiceField(required=False,queryset=Preventa.objects.all(), disabled=True,label="Preventa")
     
-    class Meta:
-        model = Tareas
-        fields = "__all__"
+#     class Meta:
+#         model = Tareas
+#         fields = "__all__"
         
 class TipoTarea(models.Model):
     tipo = models.CharField(max_length=200)
