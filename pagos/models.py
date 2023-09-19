@@ -20,8 +20,6 @@ def save_path(instance,filename):
 
 # Create your models here.
 
-
-
 class Pago(models.Model):
     preventa = models.ForeignKey(Preventa, on_delete=models.CASCADE, blank=True, null=True)
     usuario = models.CharField(max_length=30, blank=True, null=True)

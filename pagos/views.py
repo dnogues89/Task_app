@@ -90,8 +90,6 @@ class ActualizarPago(LoginRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context['numero_preventa'] = context['pago'].preventa
         context['imagen'] = context['pago'].comprobante.url
-        # print(context['pago'].preventa.user.username)
-        # print(context)
         return context
     
     def get_form(self, form_class=None):

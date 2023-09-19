@@ -6,14 +6,32 @@
 </div>
 
 <div class="card-body">
-    <h1>PV: {{form.preventa.value}}</h1>
+    <h2>{{form.preventa.value}}</h2>
     <form method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
+        <li>Tipo de venta: {{form.tipo_venta}}</li>
+        <p></p>
+        <li>Tipo de cliente Final: {{form.tipo_cliente}}</li>
+        <p></p>
+        <li>Estado Civil del titular: {{form.estado_civil}}</li>
+        <p></p>
+        <li>CO-Titular: {{form.co_titular}}</li>
+        <p></p>
+        <li>CO-Titular: {{form.co_titular}}</li>
+        <p></p>
+        <li>Cantidad de cedulas azules: {{form.cedulas_azules}}</li>
+        <p></p>
+        <li>Si es SS o SH indicar cantidad de socios involucrados: {{form.socios}}</li>
+        <p></p>
+        <li>Quien retira la unidad?: {{form.retira_unidad}}</li>
+        <p></p>
+        <li>Quien retira la unidad?: {{form.retira_unidad}}</li>
+        <p></p>
+        
         <input class="button" type="submit" value="Guardar">
         
-        {% if preventa.id %}
-            <a href="{% url 'lista-tareas-preventa' pk=preventa_id %}" class="button">Tareas de la preventa</a>    
+        {% if preventa.id %} 
+            <input type="button" class="button" value="Tareas de la preventa" onclick="window.location.href = '{% url 'lista-tareas-preventa' pk=preventa_id %}'">
         {% endif %}    
     </form>
     

@@ -9,14 +9,13 @@
 <div class="card-body">
     <form method="POST" action="" enctype="multipart/form-data">
         {% csrf_token %}
-
+        <h3>Preventa: {{numero_preventa}}</h3>
         <li>Tarea: {{form.titulo.value}}</li>
         <p></p>
-        <li>Descripcion de la tarea:</li>
-        <p>{{form.descripcion.value}}</p>
+        <li>Descripcion de la tarea: {{form.descripcion.value}} </li>
+        
         <p></p>
         <li>Adjunto: {{form.adjunto}}</li>
-        <p>{{form.adjunto}}</p>
         <p></p>
     
         <input class="button" type="submit" value="Guardar">
