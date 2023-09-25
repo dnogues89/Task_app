@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  espasa-app:
+    container_name: espasa-app
+    image: espasa-app:v0.1
+    ports:
+      - "8000:8000"
+
+  nginx-espasa:
+    container_name: nginx-espasa
+    image: nginx-espasa:v0.1
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - espasa-app
