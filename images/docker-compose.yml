@@ -4,6 +4,8 @@ services:
   espasa-app:
     container_name: espasa-app
     image: espasa-app:v0.1
+    volumes:
+      - ../db.sqlite3:/app/db.sqlite3
     ports:
       - "8000:8000"
 
