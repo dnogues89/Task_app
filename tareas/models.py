@@ -63,6 +63,9 @@ class TipoDoc(models.Model):
     
     def __str__(self) -> str:
         return f'{self.tipo_id} | {self.descripcion}'
+    
+    class Meta:
+        ordering = ['descripcion']
 
 class Tareas(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
@@ -131,3 +134,7 @@ class AsignacionTareas(models.Model):
     
     def __str__(self) -> str:
         return self.titulo
+    
+    class Meta:
+        verbose_name = 'asignaciontareas'
+        verbose_name_plural = 'asignaciontareas'
