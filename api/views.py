@@ -12,6 +12,7 @@ from django.db.models import Q
 from rest_framework.decorators import api_view
 from .serializer import TareasSerializer
 from rest_framework.response import Response
+from .key_espasa_api import espasa_key
 
 
 def get_preventas(request):
@@ -28,7 +29,7 @@ def get_preventas(request):
         last_update.save()
         url = f'https://gvcrmweb.backoffice.com.ar/apicrmespasa/v1/ventaokm/obtenerPreventas?fechaDesde={last_update.date}'
         
-        headers = {"apiKey": "8ajKeuUgMRde8y@89@6KzFlBxU5LgjOzLXNMjQ8m"}
+        headers = {"apiKey": espasa_key}
         
         response = requests.get(url, headers=headers)
         
