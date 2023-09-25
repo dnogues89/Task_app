@@ -56,30 +56,14 @@ class Preventa(models.Model):
     
     def __str__(self) -> str:
         return self.preventa
+    
+class TipoDoc(models.Model):
+    tipo_id = models.IntegerField(primary_key=True)
+    descripcion = models.CharField(max_length=100)
+    
+    def __str__(self) -> str:
+        return f'{self.tipo_id} | {self.descripcion}'
 
-# class PreventaForm(forms.ModelForm):
-#     user = forms.ModelChoiceField(required=False,queryset=User.objects.all(), disabled=True,label="Usuario")
-#     preventa = forms.CharField(required=False,disabled=True,label='Numero de Preventa')
-#     choises = [('Persona Fisica','Persona Fisica'),('Persona Juridica','Persona Juridica')]
-#     tipo_cliente = forms.ChoiceField(choices= choises, required=False, disabled=False, label='Tipo de cliente final')
-#     choises = [('Soltero/a','Soltero/a'),('Casado/a','Casado/a')] 
-#     estado_civil = forms.ChoiceField(choices= choises, required=False, disabled=False, label='Estado Civil TITULAR')
-#     choises = [('No','No'),('Si','Si')]
-#     co_titular = forms.ChoiceField(choices= choises, required=False, disabled=False, label='Co-Titular')
-#     cedulas_azules = forms.IntegerField(required=False, label='Cantidad cedulas azules. En numero')
-#     socios = forms.IntegerField(required=False,label='Si es SS o SH indicar cantidad de socios involucrados')
-#     choises = [('',''),('Transportista','Transportista'),('Individuo','Individuo'),('Titular','Titular')]
-#     retira_unidad = forms.ChoiceField(choices= choises, required=False, disabled=False, label='Quien retira la unidad?')
-#     # vendedor = forms.ModelChoiceField(required=False,queryset=Vendedor.objects.all(), disabled=True)
-#     completo = forms.BooleanField(required=False, label='Operacion terminada.')
- 
-    
-#     class Meta:
-#         model = Preventa
-#         fields = '__all__'
-    
-    
-    
 class Tareas(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
     titulo = models.CharField(max_length=200)
@@ -90,6 +74,8 @@ class Tareas(models.Model):
     actualizado = models.DateField(auto_now=True) # fecha de actualizacion para 
     creado = models.DateField(auto_now_add=True)
     pv = models.ForeignKey(Preventa, on_delete=models.CASCADE, null=True,blank=True)
+    tipo_doc = models.ForeignKey(TipoDoc, null=True, blank=True, on_delete=models.SET_NULL)
+    carga_crm = models.BooleanField(default=False)
     
     def __str__(self) -> str:
         return self.titulo
@@ -122,27 +108,13 @@ class Tareas(models.Model):
     def delete(self, using: Any = None, keep_parents: bool = False) -> Tuple[int, Dict[str, int]]:
         self.adjunto.delete()
         super().delete(using=using, keep_parents=keep_parents)
-        
 
-    
     
     class Meta:
         ordering = ['completo']
         verbose_name = 'tarea'
         verbose_name_plural = 'tareas'
     
-# class TareasForm(forms.ModelForm):
-#     user = forms.ModelChoiceField(required=False,queryset=User.objects.all(), disabled=True,label="Usuario")
-#     titulo = forms.CharField(required=False,disabled=True,label='Tarea')
-#     descripcion = forms.CharField(required=False, widget=forms.Textarea(attrs={'readonly': 'readonly'}),label="Descripcion Tarea")
-#     descarga = forms.FileField(required=False, disabled=False, label='Descargar archivo para firmar')
-#     adjunto = forms.FileField(required=False,label='Adjuntar Archivo')
-#     completo = forms.BooleanField(required=False,label='Tarea Realizada')
-#     pv = forms.ModelChoiceField(required=False,queryset=Preventa.objects.all(), disabled=True,label="Preventa")
-    
-#     class Meta:
-#         model = Tareas
-#         fields = "__all__"
         
 class TipoTarea(models.Model):
     tipo = models.CharField(max_length=200)
@@ -154,6 +126,7 @@ class AsignacionTareas(models.Model):
     tipo = models.ForeignKey(TipoTarea, on_delete=models.CASCADE)
     titulo = models.CharField(max_length=250)
     descripcion = models.TextField(null=True,blank=True)
+    tipo_doc = models.ForeignKey(TipoDoc, null=True, blank=True, on_delete=models.SET_NULL)
     descarga = models.FileField(upload_to='archivos_para_descargar',null=True,blank=True)
     
     def __str__(self) -> str:

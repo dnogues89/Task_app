@@ -32,7 +32,6 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,7 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'tareas.apps.TareasConfig',
     'django.contrib.humanize',
+    'rest_framework',
     'pagos',
+    'api',
 
 ]
 

@@ -7,7 +7,8 @@ from . import views
 
 urlpatterns = [
     #Vistas para el login
-    path('preventas/', views.get_preventas, name='get-preventas'),
+    path('get_preventas/', views.get_preventas, name='get-preventas-crm'),
+    path('send_tareas/', views.enviar_tareas, name='send-tareas-crm'),
 
 ]
 

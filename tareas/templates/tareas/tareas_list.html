@@ -4,7 +4,7 @@
 <div class="header-bar">
     <div>
         <div >
-            <h1>Hola {{request.user|title}}</h1>
+            <h1>Hola {{request.user.first_name|title}}</h1>
             <u><a href="{% url 'home' %}"><h3 style="margin-right: 20px; display: flex;">Home</h3></a></u>
             <h3 style="margin:0"> Tenes {{cantidad}} tarea{{cantidad|pluralize:"s" }} pendientes</h3> 
 
