@@ -9,6 +9,12 @@
     <h2>{{form.preventa.value}} | {{form.modelo.value}}</h2>
     <form method="POST">
         {% csrf_token %}
+        <div id="elemento-oculto" style="display: none;">
+            {{form.preventa}}
+            {{form.fecha_preventa}}
+            {{form.user}}
+        </div>
+        
         <li>Tipo de venta: {{form.tipo_venta}}</li>
         <p></p>
         <li>Tipo de cliente Final: {{form.tipo_cliente}}</li>
@@ -17,13 +23,9 @@
         <p></p>
         <li>CO-Titular: {{form.co_titular}}</li>
         <p></p>
-        <li>CO-Titular: {{form.co_titular}}</li>
-        <p></p>
         <li>Cantidad de cedulas azules: {{form.cedulas_azules}}</li>
         <p></p>
         <li>Si es SS o SH indicar cantidad de socios involucrados: {{form.socios}}</li>
-        <p></p>
-        <li>Quien retira la unidad?: {{form.retira_unidad}}</li>
         <p></p>
         <li>Quien retira la unidad?: {{form.retira_unidad}}</li>
         <p></p>

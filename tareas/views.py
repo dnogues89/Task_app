@@ -127,6 +127,9 @@ class ActualizarTarea(LoginRequiredMixin, UpdateView):
 
         return context
     
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        return super().form_valid(form)
+    
 
     
 class EliminarTarea(LoginRequiredMixin, DeleteView):
@@ -153,23 +156,9 @@ class CrearPreventa(LoginRequiredMixin, CreateView):
     context_object_name = 'preventa'
     fields = '__all__'
     
-    # def form_valid(self, form: BaseModelForm) -> HttpResponse:
-    #     pv = form.save()
-    #     if pv is not None:                       
-    #         if pv.tipo_venta == 'Contado':
-    #             AsignacionTareas.crear_tareas_preventa_contado(pv.user,pv)
-    #         else:
-    #             AsignacionTareas.crear_tareas_preventa_financiado(pv.user,pv)
-    #         if pv.tipo_cliente == "Persona Fisica":
-    #             AsignacionTareas.crear_tareas_preventa_persona_fisica(pv.user,pv)
-    #         else:
-    #             AsignacionTareas.crear_tareas_preventa_persona_juridica(pv.user,pv)
-    #         return redirect('tareas')
-        
-
 class ActualizarPreventa(LoginRequiredMixin, UpdateView):
     model = Preventa
-    success_url = reverse_lazy('preventa')
+    success_url = reverse_lazy('preventas')
     fields = '__all__'
     
     def get_context_data(self, **kwargs):
@@ -178,8 +167,17 @@ class ActualizarPreventa(LoginRequiredMixin, UpdateView):
         # context['numero_preventa'] = context['prev'].preventa
         return context
     
+    def form_invalid(self, form: BaseModelForm) -> HttpResponse:
+        print(form.data)
+        print(form.errors.items())
+        return super().form_invalid(form)
+        
+    
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        super().form_valid(form)
+        print('a ver?')
         pv = form.save()
+        print('aca')
         if pv is not None:
             if pv.tipo_venta == 'Contado':
                 antes = Tareas.objects.filter(pv=pv,titulo='Cuentas Activas Firmadas').count()
@@ -189,6 +187,7 @@ class ActualizarPreventa(LoginRequiredMixin, UpdateView):
                 antes = Tareas.objects.filter(pv=pv,titulo='Anexo 1.2 del credito').count()
                 if antes == 0:
                     asignacion_tareas.crear_tareas_preventa_financiado(pv.user,pv)
+                    
             if pv.tipo_cliente == "Persona Fisica":
                 antes = Tareas.objects.filter(pv=pv,titulo='Titular DNI FRENTE').count()
                 if antes ==0:
@@ -202,9 +201,7 @@ class ActualizarPreventa(LoginRequiredMixin, UpdateView):
                 antes = Tareas.objects.filter(pv=pv,titulo='Conyugue DNI FRENTE').count()
                 if antes == 0:
                     asignacion_tareas.crear_tarea_conyugue(pv.user,pv)
-                    
-                
-                
+                                   
             if pv.retira_unidad == 'Transportista':
                 antes = Tareas.objects.filter(pv=pv,titulo='COT').count()
                 if antes == 0:
