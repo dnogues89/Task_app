@@ -67,6 +67,12 @@ class TipoDoc(models.Model):
     class Meta:
         ordering = ['descripcion']
 
+class TipoTarea(models.Model):
+    tipo = models.CharField(max_length=200)
+    
+    def __str__(self) -> str:
+        return self.tipo
+
 class Tareas(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
     titulo = models.CharField(max_length=200)
@@ -76,6 +82,7 @@ class Tareas(models.Model):
     completo = models.BooleanField(default=False)
     actualizado = models.DateField(auto_now=True) # fecha de actualizacion para 
     creado = models.DateField(auto_now_add=True)
+    tipo_tarea = models.ForeignKey(TipoTarea, null=True, blank=True, on_delete=models.SET_NULL)
     pv = models.ForeignKey(Preventa, on_delete=models.CASCADE, null=True,blank=True)
     tipo_doc = models.ForeignKey(TipoDoc, null=True, blank=True, on_delete=models.SET_NULL)
     carga_crm = models.BooleanField(default=False)
@@ -119,11 +126,7 @@ class Tareas(models.Model):
         verbose_name_plural = 'tareas'
     
         
-class TipoTarea(models.Model):
-    tipo = models.CharField(max_length=200)
-    
-    def __str__(self) -> str:
-        return self.tipo
+
 
 class AsignacionTareas(models.Model):
     tipo = models.ForeignKey(TipoTarea, on_delete=models.CASCADE)
