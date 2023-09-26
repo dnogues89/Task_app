@@ -36,7 +36,7 @@ class Preventa(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL,null=True,blank=True)
     modelo = models.CharField(max_length=100, blank=True, null=True)
     fecha_preventa = models.DateField(blank=True,null=True)
-    preventa = models.CharField(max_length=8, help_text="Ejemplo 12345/1",unique=True)
+    preventa = models.CharField(max_length=15, help_text="Ejemplo 12345/1",unique=True)
     choises = [('Contado','Contado'),('Financiado','Financiado')]
     tipo_venta = models.CharField(max_length= 15, choices=choises) # agregar tareas a ==l tipo de venta, no lo hace CARVAJAL desde la API!
     choises = [('Persona Fisica','Persona Fisica'),('Persona Juridica','Persona Juridica')] 

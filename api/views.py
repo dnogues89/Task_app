@@ -72,10 +72,12 @@ def get_preventas(request):
                     
                     if copiar_tareas_usuario:
                         tipo_tarea = TipoTarea.objects.get(tipo='tareas por usuario')
-                        tareas_a_copiar = Tareas.objects.filter(user=user) & Q(tipo_tarea = tipo_tarea)
+                        tareas_a_copiar = Tareas.objects.filter(user=user)
+                        tareas_a_copiar = tareas_a_copiar.filter(tipo_tarea=tipo_tarea)
                         for tarea in tareas_a_copiar:
                             tarea.pk = None
                             tarea.pv = nueva_preventa
+                            tarea.carga_crm = False
                             tarea.save()
                     else:
                         crear_tareas_para_usuario(user,nueva_preventa)
@@ -96,7 +98,7 @@ def enviar_tareas(request):
             mi_dict['preventa'] = None
         mi_dict['link'] = i.adjunto.url
         try:
-            mi_dict['tipoAdjuntoID'] = i.tipo_doc
+            mi_dict['tipoAdjuntoID'] = i.tipo_doc.pk
         except:
             mi_dict['tipoAdjuntoID'] = None
         list_json.append(mi_dict)

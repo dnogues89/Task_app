@@ -7,7 +7,10 @@ class AsignacionTareasAdmin(admin.ModelAdmin):
     raw_id_fields = ('tipo_doc',)
     autocomplete_fields = ('tipo_doc',)  # Esta línea habilita el autocompletado
 
-    
+class TareasAdmin(admin.ModelAdmin):
+    list_display = ('titulo','user','completo','carga_crm')
+
+
 class TipoDocAdmin(admin.ModelAdmin):
     search_fields = ('descripcion',)
     list_display = ('tipo_id','descripcion')
@@ -22,7 +25,7 @@ class PreventaAdmin(admin.ModelAdmin):
             return obj.user
 
 # Register your models here.
-admin.site.register(Tareas)
+admin.site.register(Tareas,TareasAdmin)
 admin.site.register(Preventa,PreventaAdmin)
 admin.site.register(Vendedor)
 admin.site.register(AsignacionTareas, AsignacionTareasAdmin)
