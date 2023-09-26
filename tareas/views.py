@@ -130,6 +130,11 @@ class ActualizarTarea(LoginRequiredMixin, UpdateView):
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         return super().form_valid(form)
     
+    def form_invalid(self, form: BaseModelForm) -> HttpResponse:
+        print(form.data)
+        print(form.errors.items())
+        return super().form_invalid(form)
+    
 
     
 class EliminarTarea(LoginRequiredMixin, DeleteView):

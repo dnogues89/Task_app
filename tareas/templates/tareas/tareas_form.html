@@ -9,6 +9,13 @@
 <div class="card-body">
     <form method="POST" action="" enctype="multipart/form-data">
         {% csrf_token %}
+        <div id="elemento-oculto" style="display: none;">
+            {{form.tipo_tarea}}
+            {{form.pv}}
+            {{form.user}}
+            {{form.tipo_doc}}
+            {{form.titulo}}
+        </div>
         <h3>Preventa: {{numero_preventa}}</h3>
         <li>Tarea: {{form.titulo.value}}</li>
         <p></p>
