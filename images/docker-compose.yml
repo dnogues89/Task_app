@@ -3,7 +3,7 @@ version: '3'
 services:
   espasa-app:
     container_name: espasa-app
-    image: espasa-app:v0.1.2
+    image: espasa-app:v0.1.3
     volumes:
       - ../db.sqlite3:/app/db.sqlite3
     ports:
