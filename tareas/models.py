@@ -116,8 +116,11 @@ class Tareas(models.Model):
 
     
     def delete(self, using: Any = None, keep_parents: bool = False) -> Tuple[int, Dict[str, int]]:
-        self.adjunto.delete()
-        super().delete(using=using, keep_parents=keep_parents)
+        if self.tipo_tarea.tipo == 'tareas por usuario':
+            super().delete(using=using, keep_parents=keep_parents)
+        else:
+            self.adjunto.delete()
+            super().delete(using=using, keep_parents=keep_parents)
 
     
     class Meta:

@@ -16,10 +16,6 @@ from .key_espasa_api import espasa_key
 
 def crear_tareas_para_usuario(user,preventa):
     asignacion_tareas.crear_tareas_usuario(user,preventa)
-    
-    
-    
-
 
 def get_preventas(request):
     cant_preventas = 0
@@ -104,12 +100,8 @@ def enviar_tareas(request):
         list_json.append(mi_dict)
         mi_dict['nombre']= i.titulo
         mi_dict['extension']=f".{str(i.adjunto.url).split('.')[-1]}"
-    
-        i.carga_crm = True
         i.save()
         
-
-    
     return JsonResponse({'':list_json})
     
     
