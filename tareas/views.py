@@ -219,10 +219,12 @@ class ActualizarPreventa(LoginRequiredMixin, UpdateView):
                 antes = Tareas.objects.filter(pv=pv,titulo='Autorizacion retira titular').count()
                 if antes == 0:
                     asignacion_tareas.crear_tarea_retira_cliente_final(pv.user,pv)
+                    
             if pv.cedulas_azules != 0 and pv.cedulas_azules is not None and pv.cedulas_azules != "":
                 azules_actuales = Tareas.objects.filter(pv=pv,titulo='Cedula azul DNI FRENTE').count()
                 for i in range(0,pv.cedulas_azules-azules_actuales):
                     asignacion_tareas.crear_cedula_azul(pv.user,pv)
+                    
             if pv.socios != 0 and pv.socios is not None and pv.socios != "":
                 socios_actuales = Tareas.objects.filter(pv=pv,titulo='Socio DNI FRENTE').count()
                 for i in range(0,pv.socios-socios_actuales):
