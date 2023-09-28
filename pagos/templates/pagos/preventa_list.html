@@ -44,7 +44,7 @@
             {% else %}
                 <div class="task-title">
                     <div class="task-incomplete-icon"></div>
-                    <i><s><a href="{% url 'actualizar-preventa' pk=preventa.id %}">{{preventa.preventa}} | {{preventa.modelo}}</a></s></i>
+                    <i><a href="{% url 'actualizar-preventa' pk=preventa.id %}">{{preventa.preventa}} | {{preventa.modelo}}</a></i>
 
                 </div>           
             {% endif %}       
