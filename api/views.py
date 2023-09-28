@@ -6,28 +6,27 @@ from .models import CRMUpdates
 from tareas import asignacion_tareas
 from datetime import date
 
-from django.core import serializers
 from django.db.models import Q
 
 from rest_framework.decorators import api_view
-from .serializer import TareasSerializer
 from rest_framework.response import Response
 from .key_espasa_api import espasa_key
 
-def crear_tareas_para_usuario(user,preventa):
-    asignacion_tareas.crear_tareas_usuario(user,preventa)
-
-def get_preventas(request):
+def get_preventas(request,desde,hasta):
     cant_preventas = 0
     try:
         last_update = CRMUpdates.objects.get(tipo='get_preventas')
     except:
         last_update = CRMUpdates.objects.create(tipo='get_preventas', date=date.today())
         last_update.save()
+    
+    if desde != None:
+        last_update.date = desde
+        last_update.save()
         
     if last_update.date != date.today():
 
-        url = f'https://gvcrmweb.backoffice.com.ar/apicrmespasa/v1/ventaokm/obtenerPreventas?fechaDesde={last_update.date}'
+        url = f'https://gvcrmweb.backoffice.com.ar/apicrmespasa/v1/ventaokm/obtenerPreventas?fechaDesde={last_update.date}&fechaHasta={hasta}'
         
         last_update.date = date.today()
         last_update.save()
@@ -67,16 +66,26 @@ def get_preventas(request):
                         nueva_preventa.save()
                     
                     if copiar_tareas_usuario:
-                        tipo_tarea = TipoTarea.objects.get(tipo='tareas por usuario')
+                        tipo_tarea = TipoTarea.objects.get(tipo__icontains='tareas por usuario')
                         tareas_a_copiar = Tareas.objects.filter(user=user)
                         tareas_a_copiar = tareas_a_copiar.filter(tipo_tarea=tipo_tarea)
-                        for tarea in tareas_a_copiar:
-                            tarea.pk = None
-                            tarea.pv = nueva_preventa
-                            tarea.carga_crm = False
-                            tarea.save()
+                        for tarea in tareas_a_copiar.values():
+                            if tarea['completo']:
+                                #cargar tarea en crm
+                                
+                                #chequear que se cargo
+                                pass
+                            else:
+                                data = dict(tarea)
+                                data.pop('id')
+                                nueva_tarea = Tareas.objects.create(**data)
+                                nueva_tarea.pv = nueva_preventa
+                                nueva_tarea.save()
+                                
                     else:
-                        crear_tareas_para_usuario(user,nueva_preventa)
+                        asignacion_tareas.crear_tarea(user,preventa=None,tipo='tareas por usuario')
+                        if pv['cliente']['tipoPersona'] == 'Juridica':
+                            asignacion_tareas.crear_tarea(user,preventa=None,tipo='tareas por usuario juridica')
                         
                         
     return JsonResponse({"Cantidad preventas importadas": cant_preventas})
@@ -100,7 +109,7 @@ def enviar_tareas(request):
         list_json.append(mi_dict)
         mi_dict['nombre']= i.titulo
         mi_dict['extension']=f".{str(i.adjunto.url).split('.')[-1]}"
-        i.save()
+
         
     return JsonResponse({'':list_json})
     

@@ -5,10 +5,12 @@ class AsignacionTareasAdmin(admin.ModelAdmin):
     list_display = ('titulo','tipo','tipo_doc')
     list_filter = ('tipo',)
     raw_id_fields = ('tipo_doc',)
+    search_fields = ('titulo',)
     autocomplete_fields = ('tipo_doc',)  # Esta línea habilita el autocompletado
 
 class TareasAdmin(admin.ModelAdmin):
     list_display = ('titulo','user','completo','carga_crm')
+    search_fields = ()
 
 
 class TipoDocAdmin(admin.ModelAdmin):

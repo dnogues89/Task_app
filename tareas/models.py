@@ -33,7 +33,7 @@ class Vendedor(models.Model):
 
 
 class Preventa(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL,null=True,blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
     modelo = models.CharField(max_length=100, blank=True, null=True)
     fecha_preventa = models.DateField(blank=True,null=True)
     preventa = models.CharField(max_length=15, help_text="Ejemplo 12345/1",unique=True)

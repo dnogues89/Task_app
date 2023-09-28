@@ -26,8 +26,14 @@
         <p></p>
         <li>Cantidad de cedulas azules: {{form.cedulas_azules}}</li>
         <p></p>
-        <li>Si es SS o SH indicar cantidad de socios involucrados: {{form.socios}}</li>
+        <li>Es SS o SH?<input type="checkbox" id="mostrar_depositante_cuit" name="mostrar_depositante_cuit"> </li>
         <p></p>
+        <div id="campo_depositante_cuit" style="display:none;">
+            <p></p>
+            <li>Indicar cantidad de socios involucrados: {{form.socios}}</li>
+            <p></p>
+            
+        </div>
         <li>Quien retira la unidad?: {{form.retira_unidad}}</li>
         <p></p>
         
@@ -39,5 +45,17 @@
     </form>
     
 </div>
+<script>
+    var mostrarCheckbox = document.getElementById("mostrar_depositante_cuit");
+    var campoDepositanteCuit = document.getElementById("campo_depositante_cuit");
+
+    mostrarCheckbox.addEventListener("change", function () {
+        if (mostrarCheckbox.checked) {
+            campoDepositanteCuit.style.display = "block";
+        } else {
+            campoDepositanteCuit.style.display = "none";
+        }
+    });
+</script>
 
 {% endblock content %}
