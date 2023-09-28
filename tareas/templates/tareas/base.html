@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,9 +10,54 @@
     <title>Documentacion Espasa</title>
 
     <style>
+        @font-face {
+            font-family: 'VW-Regular'; 
+            src: url('{% static "fonts/VWText-Regular.otf" %}') format('opentype');
+        }
+        @font-face {
+            font-family: 'VW-Light'; 
+            src: url('{% static "fonts/VWHead-Light.otf" %}') format('opentype');
+        }
+        @font-face {
+            font-family: 'VW-Head';  
+            font-weight: 700;
+            src: url('{% static "fonts/VWHead-Bold.otf" %}') format('opentype');
+        }
+        @font-face {
+            font-family: 'icomoon'; src:  url('{% static "fonts/icomoon.ttf" %}') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: block;
+          }
+
+        
+        [class^="icon-"], [class*=" icon-"] {
+        font-family: 'icomoon' !important;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .icon-vw_icon-menu:before {
+        content: "\e916";
+        }
+        .icon-vw_icon-mas:before {
+        content: "\e913";
+        }
+        .icon-vw_icon-pointer:before {
+        content: "\e919";
+        }
+        .icon-vw_logo-vw:before {
+        content: "\e926";
+        }
+
         body {
             background-color: #FAFAFA;
-            font-family: 'Nunito', sans-serif;
+            font-family: 'VW-Regular';
             padding-top: 50px;
         }
     
@@ -21,7 +67,7 @@
         h4,
         h5,
         h6 {
-            font-family: 'Raleway', sans-serif;
+            font-family: 'VW-Head';
             
         }
     
@@ -44,7 +90,15 @@
             color: #fff;
             padding: 10px;
             border-radius: 5px 5px 0 0;
-            background: linear-gradient(90deg, #0d4671 0%, #457aa6 43%, #457aa6 100%);
+            background:fixed #001e50;
+        }
+
+        .header-bar2 {
+            display: flex;
+            justify-content: space-between;
+            color: #fff;
+            padding: 10px;
+            background:fixed #001e50;
         }
     
         .header-bar a {
@@ -88,14 +142,14 @@
         .task-rejected-icon {
             height: 20px;
             width: 20px;
-            background-color:  #cf4949;
+            background-color:  #00b0f0;
             border-radius: 50%;
         }
     
         .delete-link {
             text-decoration: none;
             font-weight: 900;
-            color: #cf4949;
+            color: #00b0f0;
             font-size: 22px;
             line-height: 0;
         }

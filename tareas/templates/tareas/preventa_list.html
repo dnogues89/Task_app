@@ -1,15 +1,30 @@
 {% extends 'tareas/base.html' %}
 {% block content %}
 
-<div class="header-bar">
+<div style="text-align: center; display: flex; align-items: center;" class="header-bar">
+    <div style="text-align: left; display: flex; align-items: center;">
+        <h2 class="icon-vw_logo-vw" style="color: white;">&nbsp; </h2>
+        <a href="{% url 'home' %}"><h2>Espasa</h2></a>
+            
+    </div>
+    {% if request.user.is_authenticated %}
+    <a href="{% url 'logout' %}">Desconectarse</a>
+    {% else %}
+    <a href="{% url 'login' %}">Conectarse</a>
+    {% endif %}
+    
+</div>
+
+<div class="header-bar2">
     <div>
         <div >
-            <h1>Hola {{request.user.first_name|title}}</h1>
-            <u><a href="{% url 'home' %}"><h3 style="margin-right: 20px; display: flex;">Home </h3></a></u>
             <h3 style="margin:0"> Tenes {{cantidad}} preventa{{cantidad|pluralize:"s" }} activa{{cantidad|pluralize:"s" }}</h3> 
-
         </div>
     </div>
+</div>
+
+<!-- <div class="header-bar">
+
 
     {% if request.user.is_authenticated %}
     <a href="{% url 'logout' %}">Desconectarse</a>
@@ -17,7 +32,8 @@
     <a href="{% url 'login' %}">Conectarse</a>
     {% endif %}
 
-</div>
+    
+</div> -->
 
 
 <!-- <a href="{% url 'crear-tarea' %}">Crear Tarea</a>

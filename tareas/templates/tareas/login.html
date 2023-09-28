@@ -8,9 +8,11 @@
 <div class="card-body">
     <form method="POST">
         {% csrf_token %}
+        <p>Su usuario es su CUIT / CUIL, sin espacios ni "-"</p>
         {{form.as_p}}
         <input class="button" type="submit" value="Login">
     </form>
-    <p>No estas registrado? <a href="{% url 'registrarse' %}">Registrarse</a></p>
+    <!-- <p>No estas registrado? <a href="{% url 'registrarse' %}">Registrarse</a></p> -->
+    <p>En caso de no estar registrado o no recordar su contraseña, pongase en contacto con el vendedor</p>
 </div>
 {% endblock content %}
