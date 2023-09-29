@@ -7,7 +7,9 @@
 </div>
 
 <div class="card-body">
-    <h2 style="color: #001e50;">{{form.preventa.value}} | {{form.modelo.value}}</h2>
+    
+    <h2 style="color: #001e50;">{{form.modelo.value}}</h2>
+    <h3 style="color: #001e50;">{{form.preventa.value}}</h3>
     <form method="POST">
         {% csrf_token %}
         <div id="elemento-oculto" style="display: none;">

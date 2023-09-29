@@ -39,12 +39,12 @@
             {% if preventa.completo %}
                 <div class="task-title">
                     <div class="task-complete-icon"></div>
-                    <i><s><a href="{% url 'actualizar-preventa' pk=preventa.id %}">{{preventa.preventa}} | {{preventa.modelo}}</a></s></i>
+                    <i><s><a href="{% url 'lista-pagos-preventa' pk=preventa.id %}">{{preventa.preventa}} | {{preventa.modelo}}</a></s></i>
                 </div>
             {% else %}
                 <div class="task-title">
                     <div class="task-incomplete-icon"></div>
-                    <i><a href="{% url 'actualizar-preventa' pk=preventa.id %}">{{preventa.preventa}} | {{preventa.modelo}}</a></i>
+                    <a href="{% url 'lista-pagos-preventa' pk=preventa.id %}">{{preventa.preventa}} | {{preventa.modelo}}</a>
 
                 </div>           
             {% endif %}       
