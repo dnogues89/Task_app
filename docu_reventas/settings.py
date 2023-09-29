@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-ixo)^-nos9n*zyuo3v&fv_^pldh%munfx=kz^4s74sio(pe4-v
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
+CSRF_TRUSTED_ORIGINS = ['http://espasadocu.com.ar', 'https://espasadocu.com.ar', 'http://*.espasadocu.com.ar', 'https://*.espasadocu.com.ar']
 
 # Application definition
 
