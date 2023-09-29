@@ -101,7 +101,7 @@ def enviar_tareas(request):
             mi_dict['preventa'] = i.pv.preventa
         except:
             mi_dict['preventa'] = None
-        mi_dict['link'] = i.adjunto.url
+        mi_dict['link'] = f'https://espasadocu.com.ar{i.adjunto.url}'
         try:
             mi_dict['tipoAdjuntoID'] = i.tipo_doc.pk
         except:
