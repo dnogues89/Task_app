@@ -80,11 +80,12 @@ def get_preventas(request,desde,hasta):
                                 if crm[0]:
                                     mi_dict['crm'] = crm[1]
                                     ok.append(mi_dict)
+                                    tarea.carga_crm = True
+                                    tarea.crm_id = crm[1]['idAdjunto']
                                 else:
                                     mi_dict['crm'] = crm[1]
                                     errores.append(mi_dict)
-                                #chequear que se cargo
-                                pass
+                                    tarea.crm_id = 'error de carga'
                             else:
                                 data = dict(tarea)
                                 data.pop('id')
@@ -111,9 +112,13 @@ def enviar_tareas(request):
         if crm[0]:
             mi_dict['crm'] = crm[1]
             ok.append(mi_dict)
+            i.carga_crm = True
+            i.crm_id = crm[1]['idAdjunto']
         else:
             mi_dict['crm'] = crm[1]
             errores.append(mi_dict)
+            i.crm_id = 'error de carga'
+        
 
     return JsonResponse({'errores':errores,'ok':ok})
 
