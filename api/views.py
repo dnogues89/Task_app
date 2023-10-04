@@ -148,6 +148,6 @@ def post_crm(data):
 
     
     if response.status_code == 200:
-        return True, response.text
+        return True, response.json()
     else:
-        return False, response.text
+        return False, response.json()
