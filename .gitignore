@@ -168,3 +168,4 @@ media/
 db.sqlite3
 ./api/key_espasa_api.py
 api/key_espasa_api.py
+primer prueba.json
