@@ -129,7 +129,7 @@ def tarea_to_json(tarea):
     except:
         mi_dict['tipoAdjuntoID'] = None
     mi_dict['nombre']= tarea.titulo
-    mi_dict['extension']=f"{str(tarea.adjunto.url).split('.')[-1]}"
+    mi_dict['extension']=f".{str(tarea.adjunto.url).split('.')[-1]}"
     
     return mi_dict
         
