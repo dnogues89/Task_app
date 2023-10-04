@@ -1,6 +1,6 @@
 import requests
 from django.http import JsonResponse
-from tareas.models import Preventa, Tareas, User, TipoTarea, AsignacionTareas
+from tareas.models import Preventa, Tareas, User, TipoTarea
 
 from .models import CRMUpdates
 from tareas import asignacion_tareas
@@ -9,8 +9,9 @@ from datetime import date
 from django.db.models import Q
 
 from rest_framework.decorators import api_view
-from rest_framework.response import Response
 from .key_espasa_api import espasa_key
+
+import json
 
 def get_preventas(request,desde,hasta):
     cant_preventas = 0
@@ -66,13 +67,22 @@ def get_preventas(request,desde,hasta):
                         nueva_preventa.save()
                     
                     if copiar_tareas_usuario:
-                        tipo_tarea = TipoTarea.objects.get(tipo__icontains='tareas por usuario')
+                        tipo_tarea = TipoTarea.objects.get(tipo='tareas por usuario')
                         tareas_a_copiar = Tareas.objects.filter(user=user)
                         tareas_a_copiar = tareas_a_copiar.filter(tipo_tarea=tipo_tarea)
                         for tarea in tareas_a_copiar.values():
                             if tarea['completo']:
+                                errores = []
+                                ok = []
                                 #cargar tarea en crm
-                                
+                                mi_dict = tarea_to_json(tarea)
+                                crm = post_crm(mi_dict)
+                                if crm[0]:
+                                    mi_dict['crm'] = crm[1]
+                                    ok.append(mi_dict)
+                                else:
+                                    mi_dict['crm'] = crm[1]
+                                    errores.append(mi_dict)
                                 #chequear que se cargo
                                 pass
                             else:
@@ -93,24 +103,46 @@ def get_preventas(request,desde,hasta):
 @api_view(['GET'])
 def enviar_tareas(request):
     tareas_queryset = Tareas.objects.filter(Q(completo=True) & Q(carga_crm=False))
-    
-    list_json = []
+    errores = []
+    ok = []
     for i in tareas_queryset:
-        mi_dict = {'id':i.pk}
-        try:
-            mi_dict['preventa'] = i.pv.preventa
-        except:
-            mi_dict['preventa'] = None
-        mi_dict['link'] = f'https://espasadocu.com.ar{i.adjunto.url}'
-        try:
-            mi_dict['tipoAdjuntoID'] = i.tipo_doc.pk
-        except:
-            mi_dict['tipoAdjuntoID'] = None
-        list_json.append(mi_dict)
-        mi_dict['nombre']= i.titulo
-        mi_dict['extension']=f".{str(i.adjunto.url).split('.')[-1]}"
+        mi_dict = tarea_to_json(i)
+        crm = post_crm(mi_dict)
+        if crm[0]:
+            mi_dict['crm'] = crm[1]
+            ok.append(mi_dict)
+        else:
+            mi_dict['crm'] = crm[1]
+            errores.append(mi_dict)
 
+    return JsonResponse({'errores':errores,'ok':ok})
+
+def tarea_to_json(tarea):
+    mi_dict={}
+    try:
+        mi_dict['preventa'] = tarea.pv.preventa
+    except:
+        mi_dict['preventa'] = None
+    mi_dict['link'] = f'https://espasadocu.com.ar{tarea.adjunto.url}'
+    try:
+        mi_dict['tipoAdjuntoID'] = tarea.tipo_doc.pk
+    except:
+        mi_dict['tipoAdjuntoID'] = None
+    mi_dict['nombre']= tarea.titulo
+    mi_dict['extension']=f"{str(tarea.adjunto.url).split('.')[-1]}"
+    
+    return mi_dict
         
-    return JsonResponse({'':list_json})
+
+def post_crm(data):
+    url = f'https://gvcrmweb.backoffice.com.ar/apicrmespasa/v1/ventaokm/altaAdjuntoPreventa'
+    headers = {"apiKey": espasa_key, 'Content-Type': 'application/json'}
     
+    json_data = json.dumps(data)
+    response = requests.post(url, data=json_data, headers=headers)
+
     
+    if response.status_code == 200:
+        return True, response.text
+    else:
+        return False, response.text
