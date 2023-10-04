@@ -86,6 +86,7 @@ class Tareas(models.Model):
     pv = models.ForeignKey(Preventa, on_delete=models.CASCADE, null=True,blank=True)
     tipo_doc = models.ForeignKey(TipoDoc, null=True, blank=True, on_delete=models.SET_NULL)
     carga_crm = models.BooleanField(default=False)
+    crm_id = models.CharField(max_length=100, blank=True, null=True)
     
     def __str__(self) -> str:
         return self.titulo
