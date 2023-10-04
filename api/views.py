@@ -92,7 +92,7 @@ def get_preventas(request,desde,hasta):
                                 nueva_tarea = Tareas.objects.create(**data)
                                 nueva_tarea.pv = nueva_preventa
                                 nueva_tarea.save()
-                                
+                            tarea.save()
                     else:
                         asignacion_tareas.crear_tarea(user,preventa=None,tipo='tareas por usuario')
                         if pv['cliente']['tipoPersona'] == 'Juridica':
@@ -114,11 +114,12 @@ def enviar_tareas(request):
             ok.append(mi_dict)
             i.carga_crm = True
             i.crm_id = crm[1]['idAdjunto']
+            
         else:
             mi_dict['crm'] = crm[1]
             errores.append(mi_dict)
             i.crm_id = 'error de carga'
-        
+        i.save()
 
     return JsonResponse({'errores':errores,'ok':ok})
 
