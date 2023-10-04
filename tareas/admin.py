@@ -9,8 +9,21 @@ class AsignacionTareasAdmin(admin.ModelAdmin):
     autocomplete_fields = ('tipo_doc',)  # Esta línea habilita el autocompletado
 
 class TareasAdmin(admin.ModelAdmin):
-    list_display = ('titulo','user','completo','carga_crm')
-    search_fields = ()
+    list_display = ('titulo','user','pv_preventa','user_name','completo','carga_crm',)
+    ordering = ['completo','carga_crm']
+    list_filter = ['completo','carga_crm']
+
+    def pv_preventa(self,obj):
+        try:
+            return obj.pv.preventa
+        except:
+            return obj.pv
+    
+    def user_name(self, obj):
+        try:
+            return obj.user.first_name
+        except:
+            return obj.user
 
 
 class TipoDocAdmin(admin.ModelAdmin):
@@ -19,6 +32,7 @@ class TipoDocAdmin(admin.ModelAdmin):
 
 class PreventaAdmin(admin.ModelAdmin):
     list_display = ('preventa','user_name','modelo',)
+    date_hierarchy = 'fecha_inicio'
     
     def user_name(self, obj):
         try:
