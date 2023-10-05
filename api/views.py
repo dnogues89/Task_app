@@ -71,7 +71,7 @@ def get_preventas(request,desde,hasta):
                         tareas_a_copiar = Tareas.objects.filter(user=user)
                         tareas_a_copiar = tareas_a_copiar.filter(tipo_tarea=tipo_tarea)
                         for tarea in tareas_a_copiar:
-                            if tarea['completo']:
+                            if tarea.completo:
                                 #cargar tarea en crm
                                 mi_dict = tarea_to_json(tarea)
                                 crm = post_crm(mi_dict)
