@@ -70,7 +70,8 @@ def get_preventas(request,desde,hasta):
                         tipo_tarea = TipoTarea.objects.get(tipo='tareas por usuario')
                         tareas_a_copiar = Tareas.objects.filter(user=user)
                         tareas_a_copiar = tareas_a_copiar.filter(tipo_tarea=tipo_tarea)
-                        for tarea in tareas_a_copiar.values():
+                        for tarea in tareas_a_copiar:
+                            print(tarea['completo'])
                             if tarea['completo']:
                                 #cargar tarea en crm
                                 mi_dict = tarea_to_json(tarea)
@@ -79,12 +80,6 @@ def get_preventas(request,desde,hasta):
                                     mi_dict['crm'] = crm[1]
                                 else:
                                     mi_dict['crm'] = crm[1]
-                            else:
-                                data = dict(tarea)
-                                data.pop('id')
-                                nueva_tarea = Tareas.objects.create(**data)
-                                nueva_tarea.pv = nueva_preventa
-                                nueva_tarea.save()
                     else:
                         asignacion_tareas.crear_tarea(user,preventa=None,tipo='tareas por usuario')
                         if pv['cliente']['tipoPersona'] == 'Juridica':
