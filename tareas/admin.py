@@ -12,6 +12,7 @@ class TareasAdmin(admin.ModelAdmin):
     list_display = ('titulo','user','pv_preventa','user_name','completo','carga_crm',)
     ordering = ['completo','carga_crm']
     list_filter = ['completo','carga_crm']
+    search_fields = ['pv__preventa',]
 
     def pv_preventa(self,obj):
         try:
@@ -33,6 +34,7 @@ class TipoDocAdmin(admin.ModelAdmin):
 class PreventaAdmin(admin.ModelAdmin):
     list_display = ('preventa','user_name','modelo',)
     date_hierarchy = 'fecha_inicio'
+    search_fields = ['preventa','user__first_name']
     
     def user_name(self, obj):
         try:
