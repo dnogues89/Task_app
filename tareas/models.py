@@ -53,6 +53,7 @@ class Preventa(models.Model):
     vendedor = models.ForeignKey(Vendedor, on_delete=models.CASCADE, null=True,blank=True)
     completo=models.BooleanField(default=False)
     fecha_inicio = models.DateTimeField(auto_now=True,verbose_name='Fecha de creacion')
+    tareas_de_usuario_crm = models.BooleanField(default=False)
     
     def __str__(self) -> str:
         return self.preventa
