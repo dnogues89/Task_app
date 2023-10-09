@@ -66,19 +66,19 @@ def get_preventas(request,desde,hasta):
                             asignacion_tareas.crear_tarea(user,nueva_preventa,'preventa financiado')
                         nueva_preventa.save()
                     
-                    if copiar_tareas_usuario:
-                        tipo_tarea = TipoTarea.objects.get(tipo='tareas por usuario')
-                        tareas_a_copiar = Tareas.objects.filter(user=user)
-                        tareas_a_copiar = tareas_a_copiar.filter(tipo_tarea=tipo_tarea)
-                        for tarea in tareas_a_copiar:
-                            if tarea.completo:
-                                #cargar tarea en crm
-                                mi_dict = tarea_to_json(tarea)
-                                crm = post_crm(mi_dict)
-                                if crm[0]:
-                                    mi_dict['crm'] = crm[1]
-                                else:
-                                    mi_dict['crm'] = crm[1]
+                    # if copiar_tareas_usuario:
+                    #     tipo_tarea = TipoTarea.objects.get(tipo='tareas por usuario')
+                    #     tareas_a_copiar = Tareas.objects.filter(user=user)
+                    #     tareas_a_copiar = tareas_a_copiar.filter(tipo_tarea=tipo_tarea)
+                    #     for tarea in tareas_a_copiar:
+                    #         if tarea.completo:
+                    #             #cargar tarea en crm
+                    #             mi_dict = tarea_to_json(tarea)
+                    #             crm = post_crm(mi_dict)
+                    #             if crm[0]:
+                    #                 mi_dict['crm'] = crm[1]
+                    #             else:
+                    #                 mi_dict['crm'] = crm[1]
                     else:
                         asignacion_tareas.crear_tarea(user,preventa=None,tipo='tareas por usuario')
                         if pv['cliente']['tipoPersona'] == 'Juridica':
