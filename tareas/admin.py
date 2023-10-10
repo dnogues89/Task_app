@@ -1,4 +1,7 @@
+from typing import Any
 from django.contrib import admin
+from django.db.models.query import QuerySet
+from django.http.request import HttpRequest
 from .models import Tareas, Preventa, Vendedor, TipoTarea, AsignacionTareas, TipoDoc
 
 class AsignacionTareasAdmin(admin.ModelAdmin):
@@ -25,6 +28,15 @@ class TareasAdmin(admin.ModelAdmin):
             return obj.user.first_name
         except:
             return obj.user
+    
+    def get_queryset(self, request: HttpRequest) -> QuerySet[Any]:
+        qs = super().get_queryset(request)
+        try:
+            is_vendedor = Vendedor.objects.get(vendedor = request.user)
+            qs = qs.filter(pv__vendedor=is_vendedor)
+            return qs
+        except:
+            return qs
 
 
 class TipoDocAdmin(admin.ModelAdmin):
@@ -41,6 +53,16 @@ class PreventaAdmin(admin.ModelAdmin):
             return obj.user.first_name
         except:
             return obj.user
+        
+    def get_queryset(self, request: HttpRequest) -> QuerySet[Any]:
+        qs = super().get_queryset(request)
+        try:
+            is_vendedor = Vendedor.objects.get(vendedor = request.user)
+            qs = qs.filter(vendedor=is_vendedor)
+            return qs
+        except:
+            return qs
+
 
 # Register your models here.
 admin.site.register(Tareas,TareasAdmin)
