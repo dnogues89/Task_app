@@ -147,3 +147,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 JAZZMIN_UI_TWEAKS = {
     "theme": "flatly",
 }
+
+from api import key_espasa_api
+#MAIL
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT=587
+EMAIL_HOST_USER = 'pybotwhat@gmail.com'
+EMAIL_HOST_PASSWORD = key_espasa_api.mail_password
