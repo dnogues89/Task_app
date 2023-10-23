@@ -1,6 +1,6 @@
 import requests
 from django.http import JsonResponse
-from tareas.models import Preventa, Tareas, User, TipoTarea
+from tareas.models import Preventa, Tareas, User, TipoTarea, Vendedor
 
 from .models import CRMUpdates
 from tareas import asignacion_tareas
@@ -14,12 +14,17 @@ from .key_espasa_api import espasa_key
 import json
 
 def app_user(data):
+    print(data['vendedor']['usuarioCRM'])
     try:
-        vendedor = User.objects.get(username = data['vendedor']['usuarioCRM'])
+        user = User.objects.get(username = data['vendedor']['usuarioCRM'])
+        vendedor = Vendedor.objects.get(vendedor = user)    
     except:
-        vendedor = User.objects.create(username = data['vendedor']['usuarioCRM'], first_name=data['vendedor']['nombre'], password='abcd1234')
-        vendedor.set_password('abcd1234')
+        user = User.objects.create(username = data['vendedor']['usuarioCRM'], first_name=data['vendedor']['nombre'], password='abcd1234')
+        user.set_password('abcd1234')
+        user.save()
+        vendedor = Vendedor.objects.create(vendedor=user)
         vendedor.save()
+        
         
     try:
         user = User.objects.get(username = data['cliente']['cuit'].replace('-',''))
@@ -40,38 +45,45 @@ def app_user(data):
 
 def dealer_data(data):
     user , new_user, vendedor = app_user(data)
+    nuevo_boleto = None
     try:
         boleto = Preventa.objects.get(preventa = data['preventa'])
     except:
-        boleto = Preventa.objects.create(preventa = data['boleto'], user = user, fecha_preventa=data['fecha'],modelo=data['unidad']['descripcion'],vendedor=vendedor)
-        boleto.save()
-        
-        if data['tieneFinanciacion'] == "NO":
-            boleto.tipo_venta = 'Contado'
-            asignacion_tareas.crear_tarea(user,boleto,'preventa contado')
-        else:
-            boleto.tipo_venta = 'Financiado'
-            asignacion_tareas.crear_tarea(user,boleto,'preventa financiado')
-        boleto.save()
+        try:
+            boleto = Preventa.objects.get(preventa = data['boleto'])
+        except:
+            nuevo_boleto = data['boleto']
+            boleto = Preventa.objects.create(preventa = data['boleto'], user = user, fecha_preventa=data['fecha'],modelo=data['unidad']['descripcion'],vendedor=vendedor)
+            boleto.save()
+            
+            if data['tieneFinanciacion'] == "NO":
+                boleto.tipo_venta = 'Contado'
+                asignacion_tareas.crear_tarea(user,boleto,'preventa contado')
+            else:
+                boleto.tipo_venta = 'Financiado'
+                asignacion_tareas.crear_tarea(user,boleto,'preventa financiado')
+            asignacion_tareas.crear_tarea(user,boleto,'boleto')
+            boleto.save()
     
     if new_user == False:
         if boleto.tareas_de_usuario_crm == False:
-            tareas = Tareas.objects.filter(tipo_tarea__tipo__icontains = 'usuario').filter(user=user).filter(completo=True)
-            for tarea in tareas:
-                mi_dict = tarea_to_json(tarea,'referencia')
-                crm = post_crm(mi_dict)
-                tarea.crm_id = crm[1]['idAdjunto']
-                tarea.carga_crm =True
-                tarea.save()
-            if len(tareas)>=6:
+            if Tareas.objects.filter(tipo_tarea__tipo__icontains = 'usuario').filter(user=user).filter(completo=False) == 0:
+                tareas = Tareas.objects.filter(tipo_tarea__tipo__icontains = 'usuario').filter(user=user).filter(completo=True)
+                for tarea in tareas:
+                    mi_dict = tarea_to_json(tarea,'referencia')
+                    crm = post_crm(mi_dict)
+                    tarea.crm_id = crm[1]['idAdjunto']
+                    tarea.carga_crm =True
+                    tarea.save()
                 boleto.tareas_de_usuario_crm = True
                 boleto.save()
 
-    return boleto
+    return nuevo_boleto
             
-def get_boletos(request,desde):
-    boletos_importados = []
-    url = f'https://gvcrmweb.backoffice.com.ar/apicrmespasa/v1/ventaokm/obtenerPreventas?fechaDesde={desde}'
+def get_boletos(request):
+    cant = 0
+    importados = []
+    url = f'https://gvcrmweb.backoffice.com.ar/apicrmespasa/v1/ventaokm/obtenerBoletos?fechaDesde=2023-10-01'
     headers = {"apiKey": espasa_key}
     
     response = requests.get(url, headers=headers)
@@ -79,10 +91,13 @@ def get_boletos(request,desde):
     if response.status_code == 200:
         data = response.json()
         for bol in data:
-            if bol['tipoOperacion']== "Dealers":
-                boletos_importados.append(dealer_data(bol))
+            if bol['tipoOperacion']== "Dealers":                
+                boleto = dealer_data(bol)
+                if boleto != None:
+                    cant += 1
+                    importados.append(boleto)
     
-    return JsonResponse({"Boletos": boletos_importados})
+    return JsonResponse({"Cantidad": cant, 'Boletos':importados })
             
             
 def get_preventas(request,desde):

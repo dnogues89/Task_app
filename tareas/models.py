@@ -9,7 +9,10 @@ def crear_tarea(usuario,preventa,tipo):
     tipo_tarea = TipoTarea.objects.get(tipo=tipo)
     tareas = AsignacionTareas.objects.filter(tipo=tipo_tarea)
     for tarea in tareas:
-        objeto = Tareas.objects.create(user = usuario, titulo = f'{preventa.preventa} | {tarea.titulo}', descripcion=tarea.descripcion, descarga=tarea.descarga, pv=preventa, tipo_doc = tarea.tipo_doc,tipo_tarea=tipo_tarea).save()
+        if preventa != None:
+            objeto = Tareas.objects.create(user = usuario, titulo = f'{preventa.preventa} | {tarea.titulo}', descripcion=tarea.descripcion, descarga=tarea.descarga, pv=preventa, tipo_doc = tarea.tipo_doc,tipo_tarea=tipo_tarea).save()
+        else:            
+            objeto = Tareas.objects.create(user = usuario, titulo = f'Tarea de Usuario | {tarea.titulo}', descripcion=tarea.descripcion, descarga=tarea.descarga, pv=preventa, tipo_doc = tarea.tipo_doc,tipo_tarea=tipo_tarea).save()
 
 def check_preventa_completa(instance):
     if Tareas.objects.filter(pv=instance.pv, completo=False).count()==0:
