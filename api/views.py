@@ -13,7 +13,81 @@ from .key_espasa_api import espasa_key
 
 import json
 
-def get_preventas(request,desde,hasta):
+def app_user(data):
+    try:
+        vendedor = User.objects.get(username = data['vendedor']['usuarioCRM'])
+    except:
+        vendedor = User.objects.create(username = data['vendedor']['usuarioCRM'], first_name=data['vendedor']['nombre'], password='abcd1234')
+        vendedor.set_password('abcd1234')
+        vendedor.save()
+        
+    try:
+        user = User.objects.get(username = data['cliente']['cuit'].replace('-',''))
+        new_user = False
+    except:
+        new_user = True
+        user = User.objects.create(username = data['cliente']['cuit'].replace('-',''), password='abcd1234')
+        user.set_password('abcd1234')
+        user.first_name = data['cliente']['nombreCompleto']
+        user.email = data['cliente']['email']
+        user.save()
+        asignacion_tareas.crear_tarea(user,preventa=None,tipo='tareas por usuario')
+        if data['cliente']['tipoPersona'] == 'Juridica':
+            asignacion_tareas.crear_tarea(user,preventa=None,tipo='tareas por usuario juridica')
+            
+    return user, new_user, vendedor
+
+
+def dealer_data(data):
+    user , new_user, vendedor = app_user(data)
+    try:
+        boleto = Preventa.objects.get(preventa = data['preventa'])
+    except:
+        boleto = Preventa.objects.create(preventa = data['boleto'], user = user, fecha_preventa=data['fecha'],modelo=data['unidad']['descripcion'],vendedor=vendedor)
+        boleto.save()
+        
+        if data['tieneFinanciacion'] == "NO":
+            boleto.tipo_venta = 'Contado'
+            asignacion_tareas.crear_tarea(user,boleto,'preventa contado')
+        else:
+            boleto.tipo_venta = 'Financiado'
+            asignacion_tareas.crear_tarea(user,boleto,'preventa financiado')
+        boleto.save()
+    
+    if new_user == False:
+        if boleto.tareas_de_usuario_crm == False:
+            tareas = Tareas.objects.filter(tipo_tarea__tipo__icontains = 'usuario').filter(user=user).filter(completo=True)
+            for tarea in tareas:
+                mi_dict = tarea_to_json(tarea,'referencia')
+                crm = post_crm(mi_dict)
+                tarea.crm_id = crm[1]['idAdjunto']
+                tarea.carga_crm =True
+                tarea.save()
+            if len(tareas)>=6:
+                boleto.tareas_de_usuario_crm = True
+                boleto.save()
+
+    return boleto
+            
+def get_boletos(request,desde):
+    boletos_importados = []
+    url = f'https://gvcrmweb.backoffice.com.ar/apicrmespasa/v1/ventaokm/obtenerPreventas?fechaDesde={desde}'
+    headers = {"apiKey": espasa_key}
+    
+    response = requests.get(url, headers=headers)
+    
+    if response.status_code == 200:
+        data = response.json()
+        for bol in data:
+            if bol['tipoOperacion']== "Dealers":
+                boletos_importados.append(dealer_data(bol))
+    
+    return JsonResponse({"Boletos": boletos_importados})
+            
+            
+def get_preventas(request,desde):
+    get_boletos(request,'2023-01-01')
+    
     cant_preventas = 0
     try:
         last_update = CRMUpdates.objects.get(tipo='get_preventas')
@@ -27,11 +101,10 @@ def get_preventas(request,desde,hasta):
         
     if last_update.date != date.today():
 
-        url = f'https://gvcrmweb.backoffice.com.ar/apicrmespasa/v1/ventaokm/obtenerPreventas?fechaDesde={last_update.date}&fechaHasta={hasta}'
+        url = f'https://gvcrmweb.backoffice.com.ar/apicrmespasa/v1/ventaokm/obtenerPreventas?fechaDesde={last_update.date}'
         
         last_update.date = date.today()
         last_update.save()
-              
         
         headers = {"apiKey": espasa_key}
         
@@ -39,51 +112,25 @@ def get_preventas(request,desde,hasta):
         
         if response.status_code == 200:
             data = response.json()
-            for pv in data:
-                if pv['tipoOperacion']== "Dealers":
-                    cant_preventas+=1
-                    try:
-                        user = User.objects.get(username = pv['cliente']['cuit'].replace('-',''))
-                        copiar_tareas_usuario = True
-                    except:
-                        copiar_tareas_usuario = False
-                        user = User.objects.create(username = pv['cliente']['cuit'].replace('-',''), password='abcd1234')
-                        user.set_password('abcd1234')
-                        user.first_name = pv['cliente']['nombreCompleto']
-                        user.save()
-                        
-                    
+            for pv in data:                 
                     try:
                         nueva_preventa = Preventa.objects.get(preventa = pv['preventa'])
                     except:
-                        nueva_preventa = Preventa.objects.create(preventa = pv['preventa'], user = user, fecha_preventa=pv['fecha'],modelo=pv['unidad']['descripcion'])
-                        nueva_preventa.save()
-                        if pv['tieneFinanciacion'] == "NO":
-                            nueva_preventa.tipo_venta = 'Contado'
-                            asignacion_tareas.crear_tarea(user,nueva_preventa,'preventa contado')
-                        else:
-                            nueva_preventa.tipo_venta = 'Financiado'
-                            asignacion_tareas.crear_tarea(user,nueva_preventa,'preventa financiado')
-                        nueva_preventa.save()
-                    
-                    # if copiar_tareas_usuario:
-                    #     tipo_tarea = TipoTarea.objects.get(tipo='tareas por usuario')
-                    #     tareas_a_copiar = Tareas.objects.filter(user=user)
-                    #     tareas_a_copiar = tareas_a_copiar.filter(tipo_tarea=tipo_tarea)
-                    #     for tarea in tareas_a_copiar:
-                    #         if tarea.completo:
-                    #             #cargar tarea en crm
-                    #             mi_dict = tarea_to_json(tarea)
-                    #             crm = post_crm(mi_dict)
-                    #             if crm[0]:
-                    #                 mi_dict['crm'] = crm[1]
-                    #             else:
-                    #                 mi_dict['crm'] = crm[1]
-                    else:
-                        asignacion_tareas.crear_tarea(user,preventa=None,tipo='tareas por usuario')
-                        if pv['cliente']['tipoPersona'] == 'Juridica':
-                            asignacion_tareas.crear_tarea(user,preventa=None,tipo='tareas por usuario juridica')
-                        
+                        try:
+                            nueva_preventa = Preventa.objects.get(preventa = pv['boleto'])
+                            nueva_preventa.preventa = pv['preventa']
+                            nueva_preventa.save()
+                        except:
+                            user , new_user, vendedor = app_user(data)
+                            nueva_preventa = Preventa.objects.create(preventa = pv['preventa'], user = user, fecha_preventa=pv['fecha'],modelo=pv['unidad']['descripcion'], vendedor = vendedor)
+                            nueva_preventa.save()
+                            if pv['tieneFinanciacion'] == "NO":
+                                nueva_preventa.tipo_venta = 'Contado'
+                                asignacion_tareas.crear_tarea(user,nueva_preventa,'preventa contado')
+                            else:
+                                nueva_preventa.tipo_venta = 'Financiado'
+                                asignacion_tareas.crear_tarea(user,nueva_preventa,'preventa financiado')
+                            nueva_preventa.save()
                         
     return JsonResponse({"Cantidad preventas importadas": cant_preventas})
             
@@ -93,7 +140,7 @@ def enviar_tareas(request):
     errores = []
     ok = []
     for i in tareas_queryset:
-        mi_dict = tarea_to_json(i)
+        mi_dict = tarea_to_json(i,'preventa')
         crm = post_crm(mi_dict)
         if crm[0]:
             mi_dict['crm'] = crm[1]
@@ -109,12 +156,12 @@ def enviar_tareas(request):
 
     return JsonResponse({'errores':errores,'ok':ok})
 
-def tarea_to_json(tarea):
+def tarea_to_json(tarea,tipo):
     mi_dict={}
     try:
-        mi_dict['preventa'] = tarea.pv.preventa
+        mi_dict[tipo] = tarea.pv.preventa
     except:
-        mi_dict['preventa'] = None
+        mi_dict[tipo] = None
     mi_dict['link'] = f'https://espasadocu.com.ar{tarea.adjunto.url}'
     try:
         mi_dict['tipoAdjuntoID'] = tarea.tipo_doc.pk
@@ -133,7 +180,6 @@ def post_crm(data):
     json_data = json.dumps(data)
     response = requests.post(url, data=json_data, headers=headers)
 
-    
     if response.status_code == 200:
         return True, response.json()
     else:

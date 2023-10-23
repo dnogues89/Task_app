@@ -4,16 +4,21 @@ from django.db import models
 from django import forms
 from django.contrib.auth.models import User
 
+
+def crear_tarea(usuario,preventa,tipo):
+    tipo_tarea = TipoTarea.objects.get(tipo=tipo)
+    tareas = AsignacionTareas.objects.filter(tipo=tipo_tarea)
+    for tarea in tareas:
+        objeto = Tareas.objects.create(user = usuario, titulo = tarea.titulo, descripcion=tarea.descripcion, descarga=tarea.descarga, pv=preventa, tipo_doc = tarea.tipo_doc,tipo_tarea=tipo_tarea).save()
+
 def check_preventa_completa(instance):
     if Tareas.objects.filter(pv=instance.pv, completo=False).count()==0:
         preventa = Preventa.objects.get(preventa=instance.pv)
-        if preventa.retira_unidad != "" and preventa.socios != None and preventa.cedulas_azules != None:
-            print(preventa.socios)
+        print(f'{preventa.retira_unidad != ""} - {preventa.socios != ""} - {preventa.cedulas_azules != None} - {preventa.estado_civil} - {preventa.retira_unidad}')
+        if preventa.retira_unidad != "" and preventa.cedulas_azules != None and preventa.estado_civil != None and preventa.retira_unidad != None:
             preventa.completo = True
             preventa.save()
         
-    
-
 def save_path(instance,filename):
     if instance.pv is not None or instance.pv != '':
         return f'user_{instance.user.id}/{instance.pv_id}/{filename}'
@@ -57,6 +62,61 @@ class Preventa(models.Model):
     
     def __str__(self) -> str:
         return self.preventa
+    
+    def save(self, *args, **kwargs):
+        pv = self
+        if pv.tipo_venta == 'Contado':
+            antes = Tareas.objects.filter(pv=pv,titulo='Cuentas Activas Firmadas PV').count()
+            if antes == 0:
+                crear_tarea(pv.user,pv,'preventa contado')
+        else:
+            antes = Tareas.objects.filter(pv=pv,titulo='Anexo 1.2 del credito').count()
+            if antes == 0:
+                crear_tarea(pv.user,pv,'preventa financiado')
+                
+        if pv.tipo_cliente == "Persona Fisica":
+            antes = Tareas.objects.filter(pv=pv,titulo='Titular DNI FRENTE').count()
+            if antes ==0:
+                crear_tarea(pv.user,pv,'persona fisica')
+        else:
+            antes = Tareas.objects.filter(pv=pv,titulo='Declaracion Jurada Persona Juridica').count()
+            if antes ==0:
+                crear_tarea(pv.user,pv,'persona juridica')
+            
+        if pv.estado_civil=='Casado/a':
+            antes = Tareas.objects.filter(pv=pv,titulo='Conyugue DNI FRENTE').count()
+            if antes == 0:
+                crear_tarea(pv.user,pv,'conyuge')
+                                
+        if pv.retira_unidad == 'Transportista':
+            antes = Tareas.objects.filter(pv=pv,titulo='COT').count()
+            if antes == 0:
+                crear_tarea(pv.user,pv,'retira transporte')
+        if pv.retira_unidad == 'Individuo':
+            antes = Tareas.objects.filter(pv=pv,titulo='DNI Frente retira unidad').count()
+            if antes == 0:
+                crear_tarea(pv.user,pv,'retira individuo')
+        if pv.retira_unidad == 'Titular':
+            antes = Tareas.objects.filter(pv=pv,titulo='Autorizacion retira titular').count()
+            if antes == 0:
+                crear_tarea(pv.user,pv,'retira cliente final')
+                
+        if pv.cedulas_azules != 0 and pv.cedulas_azules is not None and pv.cedulas_azules != "":
+            azules_actuales = Tareas.objects.filter(pv=pv,titulo='Cedula azul DNI FRENTE').count()
+            for i in range(0,pv.cedulas_azules-azules_actuales):
+                crear_tarea(pv.user,pv,'cedula azul')
+                
+        if pv.socios != 0 and pv.socios is not None and pv.socios != "":
+            socios_actuales = Tareas.objects.filter(pv=pv,titulo='Socio DNI FRENTE').count()
+            for i in range(0,pv.socios-socios_actuales):
+                crear_tarea(pv.user,pv,'socio persona fisica')
+                
+        if pv.co_titular == 'Si':
+            antes = Tareas.objects.filter(pv=pv,titulo='CO-Titular DNI FRENTE').count()
+            if antes == 0:
+                crear_tarea(pv.user,pv,'cotitulares')
+        super().save()
+
     
 class TipoDoc(models.Model):
     tipo_id = models.IntegerField(primary_key=True)
