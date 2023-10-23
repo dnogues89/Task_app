@@ -2,7 +2,7 @@ import requests
 from django.http import JsonResponse
 from tareas.models import Preventa, Tareas, User, TipoTarea, Vendedor
 
-from .models import CRMUpdates
+from .models import CRMUpdates, UploadErrors
 from tareas import asignacion_tareas
 from datetime import date
 
@@ -72,11 +72,21 @@ def dealer_data(data):
                 for tarea in tareas:
                     mi_dict = tarea_to_json(tarea,'referencia')
                     crm = post_crm(mi_dict)
-                    tarea.crm_id = crm[1]['idAdjunto']
-                    tarea.carga_crm =True
-                    tarea.save()
-                boleto.tareas_de_usuario_crm = True
-                boleto.save()
+                    if crm[0]:
+                        tarea.crm_id = crm[1]['idAdjunto']
+                        tarea.carga_crm =True
+                        tarea.save()
+                    else:
+                        errores = True
+                        error = UploadErrors.objects.create(tipo = mi_dict['nombre'], preventa = mi_dict['referencia'], log = crm[1])
+                        error.save()
+                
+                if errores:
+                    #Hacer notificaciones
+                    pass
+                else:  
+                    boleto.tareas_de_usuario_crm = True
+                    boleto.save()
 
     return nuevo_boleto
             
