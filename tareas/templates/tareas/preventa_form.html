@@ -7,45 +7,54 @@
 </div>
 
 <div class="card-body">
-    
-    <h2 style="color: #001e50;">{{form.modelo.value}}</h2>
-    <h3 style="color: #001e50;">{{form.preventa.value}}</h3>
-    <form method="POST">
-        {% csrf_token %}
-        <div id="elemento-oculto" style="display: none;">
-            {{form.preventa}}
-            {{form.fecha_preventa}}
-            {{form.user}}
-            {{form.modelo}}
-        </div>
-        
-        <li>Tipo de venta: {{form.tipo_venta}}</li>
-        <p></p>
-        <li>Tipo de cliente Final: {{form.tipo_cliente}}</li>
-        <p></p>
-        <li>Estado Civil del titular: {{form.estado_civil}}</li>
-        <p></p>
-        <li>CO-Titular: {{form.co_titular}}</li>
-        <p></p>
-        <li>Cantidad de cedulas azules: {{form.cedulas_azules}}</li>
-        <p></p>
-        <li>Es SS o SH?<input type="checkbox" id="mostrar_depositante_cuit" name="mostrar_depositante_cuit"> </li>
-        <p></p>
-        <div id="campo_depositante_cuit" style="display:none;">
+    {% if form.preventa.value|first in "BE-" %}
+    {% csrf_token %}
+        <h2 style="color: #001e50;">{{form.modelo.value}} | {{form.preventa.value}}</h2>
+    {% if preventa.id %}
+        <a class="button" href="{% url 'lista-tareas-preventa' pk=preventa_id %}">Tareas del Boleto</a>
+    {% endif %}
+
+
+
+    {% else %}
+        <h2 style="color: #001e50;">{{form.modelo.value}}</h2>
+        <h3 style="color: #001e50;">{{form.preventa.value}}</h3>
+        <form method="POST">
+            {% csrf_token %}
+            <div id="elemento-oculto" style="display: none;">
+                {{form.preventa}}
+                {{form.fecha_preventa}}
+                {{form.user}}
+                {{form.modelo}}
+            </div>
+            
+            <li>Tipo de venta: {{form.tipo_venta}}</li>
             <p></p>
-            <li>Indicar cantidad de socios involucrados: {{form.socios}}</li>
+            <li>Tipo de cliente Final: {{form.tipo_cliente}}</li>
+            <p></p>
+            <li>Estado Civil del titular: {{form.estado_civil}}</li>
+            <p></p>
+            <li>CO-Titular: {{form.co_titular}}</li>
+            <p></p>
+            <li>Cantidad de cedulas azules: {{form.cedulas_azules}}</li>
+            <p></p>
+            <li>Es SS o SH?<input type="checkbox" id="mostrar_depositante_cuit" name="mostrar_depositante_cuit"> </li>
+            <p></p>
+            <div id="campo_depositante_cuit" style="display:none;">
+                <p></p>
+                <li>Indicar cantidad de socios involucrados: {{form.socios}}</li>
+                <p></p>
+                
+            </div>
+            <li>Quien retira la unidad?: {{form.retira_unidad}}</li>
             <p></p>
             
-        </div>
-        <li>Quien retira la unidad?: {{form.retira_unidad}}</li>
-        <p></p>
-        
-        <input class="button" type="submit" value="Guardar">
-        
-        {% if preventa.id %}
-            <a class="button" href="{% url 'lista-tareas-preventa' pk=preventa_id %}">Tareas de la preventa</a>
-            <!-- <input type="button" class="button" value="Tareas de la preventa" onclick="window.location.href = '{% url 'lista-tareas-preventa' pk=preventa_id %}'"> -->
-        {% endif %}    
+            <input class="button" type="submit" value="Guardar">
+            
+            {% if preventa.id %}
+                <a class="button" href="{% url 'lista-tareas-preventa' pk=preventa_id %}">Tareas de la preventa</a>
+            {% endif %}
+    {% endif %}
     </form>
     
 </div>

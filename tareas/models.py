@@ -9,7 +9,7 @@ def crear_tarea(usuario,preventa,tipo):
     tipo_tarea = TipoTarea.objects.get(tipo=tipo)
     tareas = AsignacionTareas.objects.filter(tipo=tipo_tarea)
     for tarea in tareas:
-        objeto = Tareas.objects.create(user = usuario, titulo = tarea.titulo, descripcion=tarea.descripcion, descarga=tarea.descarga, pv=preventa, tipo_doc = tarea.tipo_doc,tipo_tarea=tipo_tarea).save()
+        objeto = Tareas.objects.create(user = usuario, titulo = f'{preventa.preventa} | {tarea.titulo}', descripcion=tarea.descripcion, descarga=tarea.descarga, pv=preventa, tipo_doc = tarea.tipo_doc,tipo_tarea=tipo_tarea).save()
 
 def check_preventa_completa(instance):
     if Tareas.objects.filter(pv=instance.pv, completo=False).count()==0:
@@ -64,6 +64,7 @@ class Preventa(models.Model):
         return self.preventa
     
     def save(self, *args, **kwargs):
+        super().save()
         pv = self
         if pv.tipo_venta == 'Contado':
             antes = Tareas.objects.filter(pv=pv,titulo='Cuentas Activas Firmadas PV').count()
@@ -78,7 +79,7 @@ class Preventa(models.Model):
             antes = Tareas.objects.filter(pv=pv,titulo='Titular DNI FRENTE').count()
             if antes ==0:
                 crear_tarea(pv.user,pv,'persona fisica')
-        else:
+        elif pv.tipo_cliente == "Persona Juridica":
             antes = Tareas.objects.filter(pv=pv,titulo='Declaracion Jurada Persona Juridica').count()
             if antes ==0:
                 crear_tarea(pv.user,pv,'persona juridica')
@@ -115,7 +116,7 @@ class Preventa(models.Model):
             antes = Tareas.objects.filter(pv=pv,titulo='CO-Titular DNI FRENTE').count()
             if antes == 0:
                 crear_tarea(pv.user,pv,'cotitulares')
-        super().save()
+        
 
     
 class TipoDoc(models.Model):
