@@ -82,7 +82,7 @@ def dealer_data(data):
                         tarea.save()
                     else:
                         errores = True
-                        error = UploadErrors.objects.create(tipo = mi_dict['nombre'], preventa = mi_dict['referencia'], log = crm[1])
+                        error = UploadErrors.objects.create(tipo = mi_dict['nombre'], preventa = mi_dict['referencia'], log = str(crm[1]))
                         error.save()
         
                 boleto.tareas_de_usuario_crm = True
