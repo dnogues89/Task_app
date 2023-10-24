@@ -69,56 +69,57 @@ class Preventa(models.Model):
     def save(self, *args, **kwargs):
         super().save()
         pv = self
-        if pv.tipo_venta == 'Contado':
-            antes = Tareas.objects.filter(pv=pv,titulo='Cuentas Activas Firmadas PV').count()
-            if antes == 0:
-                crear_tarea(pv.user,pv,'preventa contado')
-        else:
-            antes = Tareas.objects.filter(pv=pv,titulo='Anexo 1.2 del credito').count()
-            if antes == 0:
-                crear_tarea(pv.user,pv,'preventa financiado')
+        if pv.preventa.split('-'[0])=='BE':
+            if pv.tipo_venta == 'Contado':
+                antes = Tareas.objects.filter(pv=pv,titulo='Cuentas Activas Firmadas PV').count()
+                if antes == 0:
+                    crear_tarea(pv.user,pv,'preventa contado')
+            else:
+                antes = Tareas.objects.filter(pv=pv,titulo='Anexo 1.2 del credito').count()
+                if antes == 0:
+                    crear_tarea(pv.user,pv,'preventa financiado')
+                    
+            if pv.tipo_cliente == "Persona Fisica":
+                antes = Tareas.objects.filter(pv=pv,titulo='Titular DNI FRENTE').count()
+                if antes ==0:
+                    crear_tarea(pv.user,pv,'persona fisica')
+            elif pv.tipo_cliente == "Persona Juridica":
+                antes = Tareas.objects.filter(pv=pv,titulo='Declaracion Jurada Persona Juridica').count()
+                if antes ==0:
+                    crear_tarea(pv.user,pv,'persona juridica')
                 
-        if pv.tipo_cliente == "Persona Fisica":
-            antes = Tareas.objects.filter(pv=pv,titulo='Titular DNI FRENTE').count()
-            if antes ==0:
-                crear_tarea(pv.user,pv,'persona fisica')
-        elif pv.tipo_cliente == "Persona Juridica":
-            antes = Tareas.objects.filter(pv=pv,titulo='Declaracion Jurada Persona Juridica').count()
-            if antes ==0:
-                crear_tarea(pv.user,pv,'persona juridica')
-            
-        if pv.estado_civil=='Casado/a':
-            antes = Tareas.objects.filter(pv=pv,titulo='Conyugue DNI FRENTE').count()
-            if antes == 0:
-                crear_tarea(pv.user,pv,'conyuge')
-                                
-        if pv.retira_unidad == 'Transportista':
-            antes = Tareas.objects.filter(pv=pv,titulo='COT').count()
-            if antes == 0:
-                crear_tarea(pv.user,pv,'retira transporte')
-        if pv.retira_unidad == 'Individuo':
-            antes = Tareas.objects.filter(pv=pv,titulo='DNI Frente retira unidad').count()
-            if antes == 0:
-                crear_tarea(pv.user,pv,'retira individuo')
-        if pv.retira_unidad == 'Titular':
-            antes = Tareas.objects.filter(pv=pv,titulo='Autorizacion retira titular').count()
-            if antes == 0:
-                crear_tarea(pv.user,pv,'retira cliente final')
-                
-        if pv.cedulas_azules != 0 and pv.cedulas_azules is not None and pv.cedulas_azules != "":
-            azules_actuales = Tareas.objects.filter(pv=pv,titulo='Cedula azul DNI FRENTE').count()
-            for i in range(0,pv.cedulas_azules-azules_actuales):
-                crear_tarea(pv.user,pv,'cedula azul')
-                
-        if pv.socios != 0 and pv.socios is not None and pv.socios != "":
-            socios_actuales = Tareas.objects.filter(pv=pv,titulo='Socio DNI FRENTE').count()
-            for i in range(0,pv.socios-socios_actuales):
-                crear_tarea(pv.user,pv,'socio persona fisica')
-                
-        if pv.co_titular == 'Si':
-            antes = Tareas.objects.filter(pv=pv,titulo='CO-Titular DNI FRENTE').count()
-            if antes == 0:
-                crear_tarea(pv.user,pv,'cotitulares')
+            if pv.estado_civil=='Casado/a':
+                antes = Tareas.objects.filter(pv=pv,titulo='Conyugue DNI FRENTE').count()
+                if antes == 0:
+                    crear_tarea(pv.user,pv,'conyuge')
+                                    
+            if pv.retira_unidad == 'Transportista':
+                antes = Tareas.objects.filter(pv=pv,titulo='COT').count()
+                if antes == 0:
+                    crear_tarea(pv.user,pv,'retira transporte')
+            if pv.retira_unidad == 'Individuo':
+                antes = Tareas.objects.filter(pv=pv,titulo='DNI Frente retira unidad').count()
+                if antes == 0:
+                    crear_tarea(pv.user,pv,'retira individuo')
+            if pv.retira_unidad == 'Titular':
+                antes = Tareas.objects.filter(pv=pv,titulo='Autorizacion retira titular').count()
+                if antes == 0:
+                    crear_tarea(pv.user,pv,'retira cliente final')
+                    
+            if pv.cedulas_azules != 0 and pv.cedulas_azules is not None and pv.cedulas_azules != "":
+                azules_actuales = Tareas.objects.filter(pv=pv,titulo='Cedula azul DNI FRENTE').count()
+                for i in range(0,pv.cedulas_azules-azules_actuales):
+                    crear_tarea(pv.user,pv,'cedula azul')
+                    
+            if pv.socios != 0 and pv.socios is not None and pv.socios != "":
+                socios_actuales = Tareas.objects.filter(pv=pv,titulo='Socio DNI FRENTE').count()
+                for i in range(0,pv.socios-socios_actuales):
+                    crear_tarea(pv.user,pv,'socio persona fisica')
+                    
+            if pv.co_titular == 'Si':
+                antes = Tareas.objects.filter(pv=pv,titulo='CO-Titular DNI FRENTE').count()
+                if antes == 0:
+                    crear_tarea(pv.user,pv,'cotitulares')
         
 
     
