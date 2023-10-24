@@ -67,10 +67,12 @@ def dealer_data(data):
     
     if new_user == False:
         if boleto.tareas_de_usuario_crm == False:
-            if Tareas.objects.filter(tipo_tarea__tipo__icontains = 'usuario').filter(user=user).filter(completo=False) == 0:
+            if Tareas.objects.filter(tipo_tarea__tipo__icontains = 'usuario').filter(user=user).filter(completo=False).count() == 0:
+                print('estoy aca?')
                 tareas = Tareas.objects.filter(tipo_tarea__tipo__icontains = 'usuario').filter(user=user).filter(completo=True)
                 for tarea in tareas:
                     mi_dict = tarea_to_json(tarea,'referencia')
+                    print(mi_dict)
                     crm = post_crm(mi_dict)
                     if crm[0]:
                         tarea.crm_id = crm[1]['idAdjunto']
