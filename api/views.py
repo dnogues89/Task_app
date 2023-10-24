@@ -111,7 +111,7 @@ def get_boletos(request):
             
             
 def get_preventas(request,desde):
-    get_boletos(request,'2023-01-01')
+    get_boletos(request)
     
     cant_preventas = 0
     try:
