@@ -14,7 +14,6 @@ from .key_espasa_api import espasa_key
 import json
 
 def app_user(data):
-    print(data['vendedor']['usuarioCRM'])
     try:
         user = User.objects.get(username = data['vendedor']['usuarioCRM'])
         vendedor = Vendedor.objects.get(vendedor = user)    
@@ -69,12 +68,10 @@ def dealer_data(data):
     if new_user == False:
         if boleto.tareas_de_usuario_crm == False:
             if Tareas.objects.filter(tipo_tarea__tipo__icontains = 'usuario').filter(user=user).filter(completo=False).count() == 0:
-                print('estoy aca?')
                 tareas = Tareas.objects.filter(tipo_tarea__tipo__icontains = 'usuario').filter(user=user).filter(completo=True)
                 for tarea in tareas:
                     mi_dict = tarea_to_json(tarea,'referencia')
                     mi_dict['referencia'] = boleto.preventa
-                    print(mi_dict)
                     crm = post_crm(mi_dict)
                     if crm[0]:
                         tarea.crm_id = crm[1]['idAdjunto']
@@ -137,7 +134,8 @@ def get_preventas(request,desde):
         
         if response.status_code == 200:
             data = response.json()
-            for pv in data:                 
+            for pv in data:
+                if pv['tipoOperacion']== "Dealers": 
                     try:
                         nueva_preventa = Preventa.objects.get(preventa = pv['preventa'])
                     except:
