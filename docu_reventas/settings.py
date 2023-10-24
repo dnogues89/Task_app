@@ -157,3 +157,5 @@ EMAIL_USE_TLS = True
 EMAIL_PORT=587
 EMAIL_HOST_USER = 'espasadocu@espasa.com.ar'
 EMAIL_HOST_PASSWORD = key_espasa_api.mail_password
+
+EMAIL_FILE_PATH = BASE_DIR / "sent_emails"

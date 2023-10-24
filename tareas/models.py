@@ -69,7 +69,7 @@ class Preventa(models.Model):
     def save(self, *args, **kwargs):
         super().save()
         pv = self
-        if pv.preventa.split('-'[0])!='BE':
+        if pv.preventa.split('-')[0]!='BE':
             if pv.tipo_venta == 'Contado':
                 antes = Tareas.objects.filter(pv=pv,titulo='Cuentas Activas Firmadas PV').count()
                 if antes == 0:
