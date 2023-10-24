@@ -44,6 +44,7 @@ def app_user(data):
 
 
 def dealer_data(data):
+    errores = False
     user , new_user, vendedor = app_user(data)
     nuevo_boleto = None
     try:

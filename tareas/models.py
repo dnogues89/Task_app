@@ -24,7 +24,7 @@ def check_preventa_completa(instance):
         
 def save_path(instance,filename):
     if instance.pv is not None or instance.pv != '':
-        return f'user_{instance.user.id}/{instance.pv_id}/{filename}'
+        return f'user_{instance.user.id}/{instance.pv_id}/{filename.replace("|","")}'
     return f'user_{instance.user.id}/{filename}'
 
 # Create your models here.
