@@ -44,9 +44,9 @@ class TipoDocAdmin(admin.ModelAdmin):
     list_display = ('tipo_id','descripcion')
 
 class PreventaAdmin(admin.ModelAdmin):
-    list_display = ('preventa','user_name','modelo',)
+    list_display = ('preventa','user_name','modelo','completo')
     date_hierarchy = 'fecha_inicio'
-    search_fields = ['preventa','user__first_name']
+    search_fields = ['preventa','user__first_name','vendedor','completo']
     
     def user_name(self, obj):
         try:

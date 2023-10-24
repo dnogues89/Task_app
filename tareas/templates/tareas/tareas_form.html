@@ -17,13 +17,17 @@
             {{form.tipo_doc}}
             {{form.titulo}}
         </div>
-        <h3 style="color: #001e50;">Preventa: {{numero_preventa}}</h3>
-        <li>Tarea: {{form.titulo.value}}</li>
+        {% if numero_preventa %}
+            <h3 style="color: #001e50;">Preventa: {{numero_preventa}}</h3>
+        {% else %}
+            <h3 style="color: #001e50;">Tarea de Usuario: {{request.user.first_name}}</h3>
+        {% endif %}
+        <li><h4>Tarea:</h4> {{form.titulo.value}}</li>
         <p></p>
-        <li>Descripcion de la tarea: {{form.descripcion.value}} </li>
+        <li><h4>Descripcion de la tarea:</h4> {{form.descripcion.value}} </li>
         
         <p></p>
-        <li>Adjunto: {{form.adjunto}}</li>
+        <li><h4>Adjunto:</h4> {{form.adjunto}}</li>
         <p></p>
     
         <input class="button" type="submit" value="Guardar">
