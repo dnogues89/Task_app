@@ -147,13 +147,6 @@ def get_preventas(request,desde):
                             user , new_user, vendedor = app_user(data)
                             nueva_preventa = Preventa.objects.create(preventa = pv['preventa'], user = user, fecha_preventa=pv['fecha'],modelo=pv['unidad']['descripcion'], vendedor = vendedor)
                             nueva_preventa.save()
-                            if pv['tieneFinanciacion'] == "NO":
-                                nueva_preventa.tipo_venta = 'Contado'
-                                asignacion_tareas.crear_tarea(user,nueva_preventa,'preventa contado')
-                            else:
-                                nueva_preventa.tipo_venta = 'Financiado'
-                                asignacion_tareas.crear_tarea(user,nueva_preventa,'preventa financiado')
-                            nueva_preventa.save()
                         
     return JsonResponse({"Cantidad preventas importadas": cant_preventas})
             
