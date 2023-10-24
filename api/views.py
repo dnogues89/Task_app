@@ -84,13 +84,9 @@ def dealer_data(data):
                         errores = True
                         error = UploadErrors.objects.create(tipo = mi_dict['nombre'], preventa = mi_dict['referencia'], log = crm[1])
                         error.save()
-                
-                if errores:
-                    #Hacer notificaciones
-                    pass
-                else:  
-                    boleto.tareas_de_usuario_crm = True
-                    boleto.save()
+        
+                boleto.tareas_de_usuario_crm = True
+                boleto.save()
 
     return nuevo_boleto
             
