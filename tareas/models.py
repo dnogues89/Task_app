@@ -32,7 +32,7 @@ class Vendedor(models.Model):
     vendedor=models.ForeignKey(User,on_delete=models.CASCADE)
     
     def __str__(self) -> str:
-        return self.vendedor.username
+        return self.vendedor.first_name
     
     class Meta:
         verbose_name = 'vendedor'
