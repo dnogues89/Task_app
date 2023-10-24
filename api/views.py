@@ -72,6 +72,7 @@ def dealer_data(data):
                 tareas = Tareas.objects.filter(tipo_tarea__tipo__icontains = 'usuario').filter(user=user).filter(completo=True)
                 for tarea in tareas:
                     mi_dict = tarea_to_json(tarea,'referencia')
+                    mi_dict['referencia'] = boleto.preventa
                     print(mi_dict)
                     crm = post_crm(mi_dict)
                     if crm[0]:
