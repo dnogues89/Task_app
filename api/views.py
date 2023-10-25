@@ -108,9 +108,8 @@ def get_boletos(request):
     return JsonResponse({"Cantidad": cant, 'Boletos':importados })
             
             
-def get_preventas(request,desde):
-    get_boletos(request)
-    
+def get_preventas(request):
+    get_boletos(request) 
     cant_preventas = 0
     try:
         last_update = CRMUpdates.objects.get(tipo='get_preventas')
@@ -118,10 +117,6 @@ def get_preventas(request,desde):
         last_update = CRMUpdates.objects.create(tipo='get_preventas', date=date.today())
         last_update.save()
     
-    if desde != None:
-        last_update.date = desde
-        last_update.save()
-        
     if last_update.date != date.today():
 
         url = f'https://gvcrmweb.backoffice.com.ar/apicrmespasa/v1/ventaokm/obtenerPreventas?fechaDesde={last_update.date}'
