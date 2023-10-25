@@ -79,8 +79,8 @@ def dealer_data(data):
                         tarea.carga_crm =True
                         tarea.save()
                     else:
-                        errores = True
-                        error = UploadErrors.objects.create(tipo = mi_dict['nombre'], preventa = mi_dict['referencia'], log = str(crm[1]))
+                        error = UploadErrors.objects.create(tipo=mi_dict['nombre'],preventa=mi_dict['referencia'],log=f'ENVIADO:\n{mi_dict} \n\nRECIBIDO:\n{str(crm[1])}', date=date.today())
+                        error.save()
                         error.save()
         
                 boleto.tareas_de_usuario_crm = True
@@ -151,7 +151,7 @@ def enviar_tareas(request):
     tareas_queryset = Tareas.objects.filter(Q(completo=True) & Q(carga_crm=False))
     errores = []
     ok = []
-    for i in tareas_queryset:
+    for i in tareas_queryset.exclude(pv=None):
         mi_dict = tarea_to_json(i,'preventa')
         crm = post_crm(mi_dict)
         if crm[0]:
@@ -161,6 +161,8 @@ def enviar_tareas(request):
             i.crm_id = crm[1]['idAdjunto']
             
         else:
+            error = UploadErrors.objects.create(tipo=mi_dict['nombre'],preventa=i.pv.preventa,log=f'ENVIADO:\n{mi_dict} \n\nRECIBIDO:\n{str(crm[1])}', date=date.today())
+            error.save()
             mi_dict['crm'] = crm[1]
             errores.append(mi_dict)
             i.crm_id = 'error de carga'
@@ -169,6 +171,10 @@ def enviar_tareas(request):
     return JsonResponse({'errores':errores,'ok':ok})
 
 def tarea_to_json(tarea,tipo):
+    if tarea.pv.preventa.split('-')[0] == "BE":
+        tipo='referencia'
+    else:
+        tipo='preventa'
     mi_dict={}
     try:
         mi_dict[tipo] = tarea.pv.preventa
