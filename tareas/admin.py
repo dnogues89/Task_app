@@ -44,7 +44,7 @@ class TipoDocAdmin(admin.ModelAdmin):
     list_display = ('tipo_id','descripcion')
 
 class PreventaAdmin(admin.ModelAdmin):
-    list_display = ('preventa','user_name','modelo','vendedor','tareas_de_usuario_crm','tareas', 'completo')
+    list_display = ('preventa','user_name','modelo','vendedor','tareas_de_usuario_crm','pendientes', 'completo')
     date_hierarchy = 'fecha_inicio'
     search_fields = ['preventa','user__first_name','vendedor','tareas_de_usuario_crm','completo']
     
@@ -54,10 +54,10 @@ class PreventaAdmin(admin.ModelAdmin):
         except:
             return obj.user
 
-    def tareas(self, obj):
+    def pendientes(self, obj):
         try:
             tareas = Tareas.objects.filter(pv=obj)
-            return f'{tareas.filter(completo=False).count()} / {tareas.count()}'
+            return tareas.count() - tareas.filter(completo=True).count()
         except:
             return 'Error rastreo'
 
