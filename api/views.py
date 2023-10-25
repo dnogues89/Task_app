@@ -14,6 +14,7 @@ from .key_espasa_api import espasa_key
 import json
 
 def app_user(data):
+
     try:
         user = User.objects.get(username = data['vendedor']['usuarioCRM'])
         vendedor = Vendedor.objects.get(vendedor = user)    
