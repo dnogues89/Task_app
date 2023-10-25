@@ -9,6 +9,8 @@ services:
       - ./media:/app/media
     ports:
       - "8000:8000"
+    extra_hosts:
+      - "mail.backoffice.com.ar:10.0.4.5"
 
   nginx-espasa:
     container_name: nginx-espasa
