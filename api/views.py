@@ -106,14 +106,13 @@ def get_boletos(request):
                     cant += 1
                     importados.append(boleto)
     
-    return JsonResponse({"Cantidad": cant, 'Boletos':importados })
+    return {"Cantidad": cant, 'Boletos':importados }
             
             
 def get_preventas(request):
-    get_boletos(request) 
-    print('en preventa')
+    boletos = get_boletos(request) 
     desde = datetime.now().date() - timedelta(days=2)
-    cant_preventas = 0
+    preventas_importadas = []
     
     url = f'https://gvcrmweb.backoffice.com.ar/apicrmespasa/v1/ventaokm/obtenerPreventas?fechaDesde={desde}'
     
@@ -129,19 +128,20 @@ def get_preventas(request):
                     nueva_preventa = Preventa.objects.get(preventa = pv['preventa'])
                 except:
                     try:
-                        nueva_preventa = Preventa.objects.get(preventa = pv['boleto'])
-                        
+                        nueva_preventa = Preventa.objects.get(preventa = pv['boleto'])    
                         nueva_preventa.preventa = pv['preventa']
+                        preventas_importadas.append(nueva_preventa)
                         nueva_preventa.save()
                     except:
                         print(data)
                         user , new_user, vendedor = app_user(data)
                         nueva_preventa = Preventa.objects.create(preventa = pv['preventa'], user = user, fecha_preventa=pv['fecha'],modelo=pv['unidad']['descripcion'], vendedor = vendedor)
                         nueva_preventa.save()
+                        preventas_importadas.append(nueva_preventa)
     
-    enviar_tareas(request)
+    documentos_importados = enviar_tareas(request)
                        
-    return JsonResponse({"Cantidad preventas importadas": cant_preventas})
+    return JsonResponse({"boletos": boletos, 'preventas': preventas_importadas, 'carga docu':documentos_importados})
             
 @api_view(['GET'])
 def enviar_tareas(request):
@@ -165,7 +165,7 @@ def enviar_tareas(request):
             i.crm_id = 'error de carga'
         i.save()
 
-    return JsonResponse({'errores':errores,'ok':ok})
+    return {'errores':errores,'ok':ok}
 
 def tarea_to_json(tarea,tipo):
     try:
