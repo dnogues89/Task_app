@@ -108,8 +108,9 @@ def get_boletos(request):
     return JsonResponse({"Cantidad": cant, 'Boletos':importados })
             
             
-def get_preventas(request,desde):
+def get_preventas(request):
     get_boletos(request) 
+    desde = '2023-10-24'
     cant_preventas = 0
     
     url = f'https://gvcrmweb.backoffice.com.ar/apicrmespasa/v1/ventaokm/obtenerPreventas?fechaDesde={desde}'
