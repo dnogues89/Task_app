@@ -111,38 +111,29 @@ def get_boletos(request):
 def get_preventas(request,desde):
     get_boletos(request) 
     cant_preventas = 0
-    try:
-        last_update = CRMUpdates.objects.get(tipo='get_preventas')
-    except:
-        last_update = CRMUpdates.objects.create(tipo='get_preventas', date=date.today())
-        last_update.save()
     
-    if last_update.date != date.today():
-
-        url = f'https://gvcrmweb.backoffice.com.ar/apicrmespasa/v1/ventaokm/obtenerPreventas?fechaDesde={desde}'
-        
-        last_update.date = date.today()
-        last_update.save()
-        
-        headers = {"apiKey": espasa_key}
-        
-        response = requests.get(url, headers=headers)
-        
-        if response.status_code == 200:
-            data = response.json()
-            for pv in data:
-                if pv['tipoOperacion']== "Dealers": 
+    url = f'https://gvcrmweb.backoffice.com.ar/apicrmespasa/v1/ventaokm/obtenerPreventas?fechaDesde={desde}'
+    
+    headers = {"apiKey": espasa_key}
+    
+    response = requests.get(url, headers=headers)
+    
+    if response.status_code == 200:
+        data = response.json()
+        for pv in data:
+            if pv['tipoOperacion']== "Dealers": 
+                try:
+                    nueva_preventa = Preventa.objects.get(preventa = pv['preventa'])
+                except:
                     try:
-                        nueva_preventa = Preventa.objects.get(preventa = pv['preventa'])
+                        nueva_preventa = Preventa.objects.get(preventa = pv['boleto'])
+                        
+                        nueva_preventa.preventa = pv['preventa']
+                        nueva_preventa.save()
                     except:
-                        try:
-                            nueva_preventa = Preventa.objects.get(preventa = pv['boleto'])
-                            nueva_preventa.preventa = pv['preventa']
-                            nueva_preventa.save()
-                        except:
-                            user , new_user, vendedor = app_user(data)
-                            nueva_preventa = Preventa.objects.create(preventa = pv['preventa'], user = user, fecha_preventa=pv['fecha'],modelo=pv['unidad']['descripcion'], vendedor = vendedor)
-                            nueva_preventa.save()
+                        user , new_user, vendedor = app_user(data)
+                        nueva_preventa = Preventa.objects.create(preventa = pv['preventa'], user = user, fecha_preventa=pv['fecha'],modelo=pv['unidad']['descripcion'], vendedor = vendedor)
+                        nueva_preventa.save()
                        
     return JsonResponse({"Cantidad preventas importadas": cant_preventas})
             
