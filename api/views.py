@@ -135,6 +135,8 @@ def get_preventas(request):
                         user , new_user, vendedor = app_user(data)
                         nueva_preventa = Preventa.objects.create(preventa = pv['preventa'], user = user, fecha_preventa=pv['fecha'],modelo=pv['unidad']['descripcion'], vendedor = vendedor)
                         nueva_preventa.save()
+    
+    enviar_tareas(request)
                        
     return JsonResponse({"Cantidad preventas importadas": cant_preventas})
             
