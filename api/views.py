@@ -89,7 +89,7 @@ def dealer_data(data):
 
     return nuevo_boleto
             
-def get_boletos(request):
+def get_boletos():
     cant = 0
     importados = []
     url = f'https://gvcrmweb.backoffice.com.ar/apicrmespasa/v1/ventaokm/obtenerBoletos?fechaDesde=2023-10-01'
@@ -110,7 +110,7 @@ def get_boletos(request):
             
             
 def get_preventas(request):
-    boletos = get_boletos(request) 
+    boletos = get_boletos() 
     desde = datetime.now().date() - timedelta(days=2)
     preventas_importadas = []
     
@@ -139,12 +139,11 @@ def get_preventas(request):
                         nueva_preventa.save()
                         preventas_importadas.append(nueva_preventa)
     
-    documentos_importados = enviar_tareas(request)
+    documentos_importados = enviar_tareas()
                        
     return JsonResponse({"boletos": boletos, 'preventas': preventas_importadas, 'carga docu':documentos_importados})
             
-@api_view(['GET'])
-def enviar_tareas(request):
+def enviar_tareas():
     tareas_queryset = Tareas.objects.filter(Q(completo=True) & Q(carga_crm=False))
     errores = []
     ok = []
