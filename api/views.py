@@ -108,7 +108,7 @@ def get_boletos(request):
     return JsonResponse({"Cantidad": cant, 'Boletos':importados })
             
             
-def get_preventas(request):
+def get_preventas(request,desde):
     get_boletos(request) 
     cant_preventas = 0
     try:
@@ -119,7 +119,7 @@ def get_preventas(request):
     
     if last_update.date != date.today():
 
-        url = f'https://gvcrmweb.backoffice.com.ar/apicrmespasa/v1/ventaokm/obtenerPreventas?fechaDesde={last_update.date}'
+        url = f'https://gvcrmweb.backoffice.com.ar/apicrmespasa/v1/ventaokm/obtenerPreventas?fechaDesde={desde}'
         
         last_update.date = date.today()
         last_update.save()
