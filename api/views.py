@@ -112,7 +112,7 @@ def get_boletos(request):
 def get_preventas(request):
     get_boletos(request) 
     print('en preventa')
-    desde = datetime.now().date() - timedelta(days=5)
+    desde = datetime.now().date() - timedelta(days=2)
     cant_preventas = 0
     
     url = f'https://gvcrmweb.backoffice.com.ar/apicrmespasa/v1/ventaokm/obtenerPreventas?fechaDesde={desde}'
