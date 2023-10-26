@@ -4,7 +4,8 @@ from tareas.models import Preventa, Tareas, User, TipoTarea, Vendedor
 
 from .models import CRMUpdates, UploadErrors
 from tareas import asignacion_tareas
-from datetime import date
+from datetime import date, timedelta, datetime
+
 
 from django.db.models import Q
 
@@ -79,7 +80,7 @@ def dealer_data(data):
                         tarea.carga_crm =True
                         tarea.save()
                     else:
-                        error = UploadErrors.objects.create(tipo=mi_dict['nombre'],preventa=mi_dict['referencia'],log=f'ENVIADO:\n{mi_dict} \n\nRECIBIDO:\n{str(crm[1])}', date=date.today())
+                        error = UploadErrors.objects.create(tipo=mi_dict['nombre'],preventa=mi_dict['referencia'],log=f'ENVIADO:\n{mi_dict} \n\nRECIBIDO:\n{str(crm[1])}', date=datetime.now())
                         error.save()
                         error.save()
         
@@ -110,7 +111,8 @@ def get_boletos(request):
             
 def get_preventas(request):
     get_boletos(request) 
-    desde = '2023-10-24'
+    print('en preventa')
+    desde = datetime.now().date() - timedelta(days=5)
     cant_preventas = 0
     
     url = f'https://gvcrmweb.backoffice.com.ar/apicrmespasa/v1/ventaokm/obtenerPreventas?fechaDesde={desde}'
@@ -132,6 +134,7 @@ def get_preventas(request):
                         nueva_preventa.preventa = pv['preventa']
                         nueva_preventa.save()
                     except:
+                        print(data)
                         user , new_user, vendedor = app_user(data)
                         nueva_preventa = Preventa.objects.create(preventa = pv['preventa'], user = user, fecha_preventa=pv['fecha'],modelo=pv['unidad']['descripcion'], vendedor = vendedor)
                         nueva_preventa.save()
@@ -155,7 +158,7 @@ def enviar_tareas(request):
             i.crm_id = crm[1]['idAdjunto']
             
         else:
-            error = UploadErrors.objects.create(tipo=mi_dict['nombre'],preventa=i.pv.preventa,log=f'ENVIADO:\n{mi_dict} \n\nRECIBIDO:\n{str(crm[1])}', date=date.today())
+            error = UploadErrors.objects.create(tipo=mi_dict['nombre'],preventa=i.pv.preventa,log=f'ENVIADO:\n{mi_dict} \n\nRECIBIDO:\n{str(crm[1])}', date=datetime.now())
             error.save()
             mi_dict['crm'] = crm[1]
             errores.append(mi_dict)
@@ -165,10 +168,13 @@ def enviar_tareas(request):
     return JsonResponse({'errores':errores,'ok':ok})
 
 def tarea_to_json(tarea,tipo):
-    if tarea.pv.preventa.split('-')[0] == "BE":
+    try:
+        if tarea.pv.preventa.split('-')[0] == "BE":
+            tipo='referencia'
+        else:
+            tipo='preventa'
+    except:
         tipo='referencia'
-    else:
-        tipo='preventa'
     mi_dict={}
     try:
         mi_dict[tipo] = tarea.pv.preventa
