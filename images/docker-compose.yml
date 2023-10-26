@@ -10,7 +10,7 @@ services:
     ports:
       - "8000:8000"
     extra_hosts:
-      - "mail.backoffice.com.ar:10.0.4.5"
+      - "mail.backoffice.com.ar:10.0.4.50"
 
   nginx-espasa:
     container_name: nginx-espasa
