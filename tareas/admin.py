@@ -78,7 +78,7 @@ class PreventaAdmin(admin.ModelAdmin):
     list_display = ('preventa','user_name','creado','modelo','vendedor','tareas_de_usuario_crm','pendientes', 'completo')
     date_hierarchy = 'fecha_inicio'
     search_fields = ['preventa','user__first_name','vendedor','tareas_de_usuario_crm','completo']
-    list_filter = ['vendedor']
+    list_filter = ['vendedor','vendedor__sucursal']
     
     def creado(self,obj):
         return obj.fecha_inicio.strftime("%d/%m/%y") 
