@@ -100,7 +100,7 @@ def get_boletos():
     if response.status_code == 200:
         data = response.json()
         for bol in data:
-            if bol['tipoOperacion']== "Dealers":                
+            if bol['tipoOperacion']== "Dealers":       
                 boleto = dealer_data(bol)
                 if boleto != None:
                     cant += 1
@@ -134,8 +134,7 @@ def get_preventas(request):
                         boletos_a_preventas.append(nueva_preventa.preventa)
                         nueva_preventa.save()
                     except:
-                        print(data)
-                        user , new_user, vendedor = app_user(data)
+                        user , new_user, vendedor = app_user(pv)
                         nueva_preventa = Preventa.objects.create(preventa = pv['preventa'], user = user, fecha_preventa=pv['fecha'],modelo=pv['unidad']['descripcion'], vendedor = vendedor)
                         nueva_preventa.save()
                         preventas_importadas.append(nueva_preventa.preventa)
