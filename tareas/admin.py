@@ -98,7 +98,7 @@ class PreventaAdmin(admin.ModelAdmin):
         qs = super().get_queryset(request)
         try:
             is_supervisor = Sucursal.objects.get(supervisor = request.user)
-            qs = qs.filter(pv__vendedor__sucursal=is_supervisor)
+            qs = qs.filter(vendedor__sucursal=is_supervisor)
             return qs
         except:
             try:
