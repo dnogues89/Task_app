@@ -12,7 +12,7 @@ class AsignacionTareasAdmin(admin.ModelAdmin):
     autocomplete_fields = ('tipo_doc',)  # Esta línea habilita el autocompletado
 
 class TareasAdmin(admin.ModelAdmin):
-    list_display = ('titulo','pv','user_name','vendedor','sucursal','fecha','completo','carga_crm')
+    list_display = ('titulo','user','pv','user_name','vendedor','sucursal','fecha','completo','carga_crm')
     ordering = ['creado','completo','carga_crm']
     list_filter = ['completo','carga_crm']
     search_fields = ['pv__preventa','user__username','user__first_name']
@@ -97,11 +97,16 @@ class PreventaAdmin(admin.ModelAdmin):
     def get_queryset(self, request: HttpRequest) -> QuerySet[Any]:
         qs = super().get_queryset(request)
         try:
-            is_vendedor = Vendedor.objects.get(vendedor = request.user)
-            qs = qs.filter(vendedor=is_vendedor)
+            is_supervisor = Sucursal.objects.get(supervisor = request.user)
+            qs = qs.filter(pv__vendedor__sucursal=is_supervisor)
             return qs
         except:
-            return qs
+            try:
+                is_vendedor = Vendedor.objects.get(vendedor = request.user)
+                qs = qs.filter(vendedor=is_vendedor)
+                return qs
+            except:
+                return qs
 
 class SucursalAdmin(admin.ModelAdmin):
     list_display = ('sucursal','gerente')
