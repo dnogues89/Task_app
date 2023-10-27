@@ -27,9 +27,19 @@ def save_path(instance,filename):
         return f'user_{instance.user.id}/{instance.pv_id}/{filename.replace("|","")}'
     return f'user_{instance.user.id}/{filename}'
 
+
 # Create your models here.
+class Sucursal(models.Model):
+    choices = [('Triunvirato','Triunvirato'),('Cordoba','Cordoba'),('Thomas','Thomas'),('Lima','Lima'),('Colon','Colon')]
+    sucursal = models.CharField(max_length=30, choices=choices)
+    supervisor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    
+    def __str__(self) -> str:
+        return self.sucursal
+
 class Vendedor(models.Model):
-    vendedor=models.ForeignKey(User,on_delete=models.CASCADE)
+    vendedor=models.ForeignKey(User,on_delete=models.SET_NULL, null=True, blank=True)
+    sucursal = models.ForeignKey(Sucursal, on_delete=models.SET_NULL, null=True, blank=True)
     
     def __str__(self) -> str:
         return self.vendedor.first_name
@@ -37,7 +47,6 @@ class Vendedor(models.Model):
     class Meta:
         verbose_name = 'vendedor'
         verbose_name_plural = 'vendedores'
-        
 
 
 class Preventa(models.Model):
