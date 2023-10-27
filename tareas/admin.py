@@ -14,7 +14,7 @@ class AsignacionTareasAdmin(admin.ModelAdmin):
 class TareasAdmin(admin.ModelAdmin):
     list_display = ('titulo','user','pv','user_name','vendedor','sucursal','fecha','completo','carga_crm')
     ordering = ['creado','completo','carga_crm']
-    list_filter = ['completo','carga_crm']
+    list_filter = ['pv__vendedor','pv__vendedor__sucursal__sucursal','completo','carga_crm',]
     search_fields = ['pv__preventa','user__username','user__first_name']
     date_hierarchy = 'creado'
 
@@ -67,6 +67,7 @@ class TareasAdmin(admin.ModelAdmin):
                 return qs
             except:
                 return qs
+    
 
 
 class TipoDocAdmin(admin.ModelAdmin):
@@ -77,6 +78,7 @@ class PreventaAdmin(admin.ModelAdmin):
     list_display = ('preventa','user_name','creado','modelo','vendedor','tareas_de_usuario_crm','pendientes', 'completo')
     date_hierarchy = 'fecha_inicio'
     search_fields = ['preventa','user__first_name','vendedor','tareas_de_usuario_crm','completo']
+    list_filter = ['vendedor']
     
     def creado(self,obj):
         return obj.fecha_inicio.strftime("%d/%m/%y") 
@@ -107,6 +109,8 @@ class PreventaAdmin(admin.ModelAdmin):
                 return qs
             except:
                 return qs
+            
+
 
 class SucursalAdmin(admin.ModelAdmin):
     list_display = ('sucursal','gerente')
