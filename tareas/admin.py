@@ -12,11 +12,17 @@ class AsignacionTareasAdmin(admin.ModelAdmin):
     autocomplete_fields = ('tipo_doc',)  # Esta línea habilita el autocompletado
 
 class TareasAdmin(admin.ModelAdmin):
-    list_display = ('titulo','user','pv_preventa','user_name','completo','carga_crm',)
-    ordering = ['completo','carga_crm']
+    list_display = ('titulo','user','pv_preventa','user_name','fecha','completo','carga_crm',)
+    ordering = ['creado','completo','carga_crm']
     list_filter = ['completo','carga_crm']
-    search_fields = ['pv__preventa',]
+    search_fields = ['pv__preventa','user__username','user__first_name']
+    date_hierarchy = 'creado'
 
+
+    def fecha(self,obj):
+        return obj.creado.strftime("%d/%m/%y") 
+    
+    
     def pv_preventa(self,obj):
         try:
             return obj.pv.preventa
@@ -44,9 +50,12 @@ class TipoDocAdmin(admin.ModelAdmin):
     list_display = ('tipo_id','descripcion')
 
 class PreventaAdmin(admin.ModelAdmin):
-    list_display = ('preventa','user_name','modelo','vendedor','tareas_de_usuario_crm','pendientes', 'completo')
+    list_display = ('preventa','user_name','creado','modelo','vendedor','tareas_de_usuario_crm','pendientes', 'completo')
     date_hierarchy = 'fecha_inicio'
     search_fields = ['preventa','user__first_name','vendedor','tareas_de_usuario_crm','completo']
+    
+    def creado(self,obj):
+        return obj.fecha_inicio.strftime("%d/%m/%y") 
     
     def user_name(self, obj):
         try:
@@ -57,7 +66,7 @@ class PreventaAdmin(admin.ModelAdmin):
     def pendientes(self, obj):
         try:
             tareas = Tareas.objects.filter(pv=obj)
-            return tareas.count() - tareas.filter(completo=True).count()
+            return f'{tareas.count() - tareas.filter(completo=True).count()} / {tareas.count()}'
         except:
             return 'Error rastreo'
 

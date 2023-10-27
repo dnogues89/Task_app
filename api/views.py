@@ -113,6 +113,7 @@ def get_preventas(request):
     boletos = get_boletos() 
     desde = datetime.now().date() - timedelta(days=2)
     preventas_importadas = []
+    boletos_a_preventas = []
     
     url = f'https://gvcrmweb.backoffice.com.ar/apicrmespasa/v1/ventaokm/obtenerPreventas?fechaDesde={desde}'
     
@@ -130,18 +131,18 @@ def get_preventas(request):
                     try:
                         nueva_preventa = Preventa.objects.get(preventa = pv['boleto'])    
                         nueva_preventa.preventa = pv['preventa']
-                        preventas_importadas.append(nueva_preventa)
+                        boletos_a_preventas.append(nueva_preventa.preventa)
                         nueva_preventa.save()
                     except:
                         print(data)
                         user , new_user, vendedor = app_user(data)
                         nueva_preventa = Preventa.objects.create(preventa = pv['preventa'], user = user, fecha_preventa=pv['fecha'],modelo=pv['unidad']['descripcion'], vendedor = vendedor)
                         nueva_preventa.save()
-                        preventas_importadas.append(nueva_preventa)
+                        preventas_importadas.append(nueva_preventa.preventa)
     
     documentos_importados = enviar_tareas()
                        
-    return JsonResponse({"boletos": boletos, 'preventas': preventas_importadas, 'carga docu':documentos_importados})
+    return JsonResponse({"boletos nuevos": boletos,"boletos a PV":boletos_a_preventas ,'preventas nuevas': preventas_importadas, 'carga docu':documentos_importados})
             
 def enviar_tareas():
     tareas_queryset = Tareas.objects.filter(Q(completo=True) & Q(carga_crm=False))
