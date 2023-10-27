@@ -40,6 +40,8 @@ class TareasAdmin(admin.ModelAdmin):
         try:
             is_vendedor = Vendedor.objects.get(vendedor = request.user)
             qs = qs.filter(pv__vendedor=is_vendedor)
+            for i in qs:
+                qs = qs | Tareas.objects.filter(user = i.user)
             return qs
         except:
             return qs
