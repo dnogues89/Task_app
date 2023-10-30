@@ -76,7 +76,6 @@ class Preventa(models.Model):
         return self.preventa
     
     def save(self, *args, **kwargs):
-        super().save()
         pv = self
         if pv.preventa.split('-')[0]!='BE':
             if pv.tipo_venta == 'Contado':
@@ -129,6 +128,7 @@ class Preventa(models.Model):
                 antes = Tareas.objects.filter(pv=pv,titulo='CO-Titular DNI FRENTE').count()
                 if antes == 0:
                     crear_tarea(pv.user,pv,'cotitulares')
+        super().save()
         
 
     
