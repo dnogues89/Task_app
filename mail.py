@@ -1,21 +1,20 @@
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-import smtplib
+import smtplib, ssl
+from api.key_espasa_api import mail_password
 
-msg = MIMEMultipart()
-msg["From"] = "espasadocu@espasa.com.ar"
-msg["To"] = "damiannogues@gmail.com"
-body_text = "HOLA MUNDO :)"
-body_part = MIMEText(body_text, 'plain')
-msg.attach(body_part)
-with smtplib.SMTP_SSL('mail.backoffice.com.ar', '587') as smtp:
+port = 587  # For starttls
+smtp_server = "mail.backoffice.com.ar"
+sender_email = "espasadocu@espasa.com.ar"
+receiver_email = "dnogues@espasa.com.ar"
+password = mail_password
+message = """\
+Subject: Hi there
 
-        smtp.login('espasadocu@espasa.com.ar', 'Ed2210')
+This message is sent from Python."""
 
-        subject = "Message from python"
-        msg = "Hello from python"
-
-        smtp.sendmail('espasadocu@espasa.com.ar', 'damiannogues@gmail.com', msg)
-
-print("¡Datos enviados con éxito!")
-
+context = ssl.create_default_context()
+with smtplib.SMTP(smtp_server, port) as server:
+    server.ehlo()  # Can be omitted
+    server.starttls(context=context)
+    server.ehlo()  # Can be omitted
+    server.login(sender_email, password)
+    server.sendmail(sender_email, receiver_email, message)
