@@ -151,11 +151,11 @@ JAZZMIN_UI_TWEAKS = {
 
 from api import key_espasa_api
 #MAIL
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'mail.backoffice.com.ar'
 EMAIL_USE_TLS = True
 EMAIL_PORT=587
 EMAIL_HOST_USER = 'espasadocu@espasa.com.ar'
 EMAIL_HOST_PASSWORD = key_espasa_api.mail_password
-DEFAULT_FROM_EMAIL = 'espasadocu@espasa.com.ar'
-SERVER_EMAIL = 'espasadocu@espasa.com.ar'
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = BASE_DIR / "sent_emails"
