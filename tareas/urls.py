@@ -1,6 +1,8 @@
 from django.urls import path, include
 from .views import ListaTareas, DetalleTareas, CrearTarea, ActualizarTarea, EliminarTarea, MiLoginView, Registrarse, CrearPreventa,ListaPreventas, ListaTareasPreventa, ActualizarPreventa,download_file
 from django.contrib.auth.views import LogoutView
+from django.contrib.auth import views
+
 
 
 
@@ -15,6 +17,31 @@ urlpatterns = [
     path('login/', MiLoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(next_page = 'login'), name='logout'),
     path('registrarse/', Registrarse.as_view(),name='registrarse'),
+    path(
+        "password_change/", views.PasswordChangeView.as_view(), name="password_change"
+    ),
+    path(
+        "password_change/done/",
+        views.PasswordChangeDoneView.as_view(),
+        name="password_change_done",
+    ),
+    path("password_reset/", views.PasswordResetView.as_view(), name="password_reset"),
+    path(
+        "password_reset/done/",
+        views.PasswordResetDoneView.as_view(),
+        name="password_reset_done",
+    ),
+    path(
+        "reset/<uidb64>/<token>/",
+        views.PasswordResetConfirmView.as_view(),
+        name="password_reset_confirm",
+    ),
+    path(
+        "reset/done/",
+        views.PasswordResetCompleteView.as_view(),
+        name="password_reset_complete",
+    ),
+
     
     #Preventas Views
     path('crear-preventa',CrearPreventa.as_view(),name='crear-preventa'),
@@ -31,6 +58,8 @@ urlpatterns = [
     
     #descargar archivos
     path('download/<str:file_name>/', download_file, name='download_file'),
+    
+    
 ]
 
 if settings.DEBUG:
