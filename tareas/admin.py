@@ -17,7 +17,8 @@ class TareasAdmin(admin.ModelAdmin):
     list_filter = ['pv__vendedor','pv__vendedor__sucursal__sucursal','completo','carga_crm',]
     search_fields = ['pv__preventa','user__username','user__first_name']
     date_hierarchy = 'creado'
-
+    exclude = ['crm_id','carga_crm','tipo_doc','pv','tipo_tarea','creado','descarga','completo','user']
+    
     def vendedor(self,obj):
         try:
             return obj.pv.vendedor
@@ -79,6 +80,7 @@ class PreventaAdmin(admin.ModelAdmin):
     date_hierarchy = 'fecha_inicio'
     search_fields = ['preventa','user__first_name','vendedor','tareas_de_usuario_crm','completo']
     list_filter = ['vendedor','vendedor__sucursal']
+    exclude = ['completo','tareas_de_usuario_crm','fecha_inicio','vendedor','contado','user']
     
     def creado(self,obj):
         return obj.fecha_inicio.strftime("%d/%m/%y") 

@@ -80,6 +80,7 @@ class Preventa(models.Model):
         if pv.preventa.split('-')[0]!='BE':
             if pv.tipo_venta == 'Contado':
                 antes = Tareas.objects.filter(pv=pv,titulo__icontains='Cuentas Activas Firmadas PV').count()
+                print(antes)
                 if antes == 0:
                     crear_tarea(pv.user,pv,'preventa contado')
             else:
