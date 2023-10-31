@@ -38,8 +38,8 @@ def app_user(data):
         user.email = data['cliente']['email']
         user.save()
         asignacion_tareas.crear_tarea(user,preventa=None,tipo='tareas por usuario')
-        if data['cliente']['tipoPersona'] == 'Juridica':
-            asignacion_tareas.crear_tarea(user,preventa=None,tipo='tareas por usuario juridica')
+        # if data['cliente']['tipoPersona'] == 'Juridica':
+        #     asignacion_tareas.crear_tarea(user,preventa=None,tipo='tareas por usuario juridica')
             
     return user, new_user, vendedor
 
