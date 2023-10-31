@@ -104,7 +104,7 @@ class DetalleTareas(LoginRequiredMixin, DetailView):
 class CrearTarea(LoginRequiredMixin, CreateView):
     model = Tareas
     fields = ('titulo','descripcion','completo','descarga','adjunto',)
-    success_url = reverse_lazy('tareas')
+    success_url = reverse_lazy('home')
     
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         form.instance.user = self.request.user
@@ -113,7 +113,7 @@ class CrearTarea(LoginRequiredMixin, CreateView):
     
 class ActualizarTarea(LoginRequiredMixin, UpdateView):
     model = Tareas
-    success_url = reverse_lazy('tareas')
+    success_url = reverse_lazy('home')
     context_object_name = 'tarea'
     fields = '__all__'
     
@@ -140,7 +140,7 @@ class ActualizarTarea(LoginRequiredMixin, UpdateView):
 class EliminarTarea(LoginRequiredMixin, DeleteView):
     model = Tareas
     context_object_name = 'tarea'
-    success_url = reverse_lazy('tareas')
+    success_url = reverse_lazy('home')
     
     
 # Crear Preventas
@@ -163,7 +163,7 @@ class CrearPreventa(LoginRequiredMixin, CreateView):
     
 class ActualizarPreventa(LoginRequiredMixin, UpdateView):
     model = Preventa
-    success_url = reverse_lazy('preventas')
+    success_url = reverse_lazy('home')
     fields = '__all__'
     
     def get_context_data(self, **kwargs):

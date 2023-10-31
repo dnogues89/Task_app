@@ -111,7 +111,7 @@ def get_boletos():
             
 def get_preventas(request):
     boletos = get_boletos() 
-    desde = datetime.now().date() - timedelta(days=2)
+    desde = datetime.now().date() - timedelta(days=10)
     preventas_importadas = []
     boletos_a_preventas = []
     
