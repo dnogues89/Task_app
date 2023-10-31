@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import ListaTareas, DetalleTareas, CrearTarea, ActualizarTarea, EliminarTarea, MiLoginView, Registrarse, CrearPreventa,ListaPreventas, ListaTareasPreventa, ActualizarPreventa,download_file
+from .views import ListaTareas, DetalleTareas, CrearTarea, ActualizarTarea, EliminarTarea, MiLoginView, Registrarse, CrearPreventa,ListaPreventas, ListaTareasPreventa, ActualizarPreventa,download_file, MiPasswordResetView, MiPasswordResetDoneView, MiPasswordResetConfirmView, MiPasswordResetCompleteView
 from django.contrib.auth.views import LogoutView
 from django.contrib.auth import views
 
@@ -25,20 +25,20 @@ urlpatterns = [
         views.PasswordChangeDoneView.as_view(),
         name="password_change_done",
     ),
-    path("password_reset/", views.PasswordResetView.as_view(), name="password_reset"),
+    path("password_reset/", MiPasswordResetView.as_view(), name="password_reset"),
     path(
         "password_reset/done/",
-        views.PasswordResetDoneView.as_view(),
+        MiPasswordResetDoneView.as_view(),
         name="password_reset_done",
     ),
     path(
         "reset/<uidb64>/<token>/",
-        views.PasswordResetConfirmView.as_view(),
+        MiPasswordResetConfirmView.as_view(),
         name="password_reset_confirm",
     ),
     path(
         "reset/done/",
-        views.PasswordResetCompleteView.as_view(),
+        MiPasswordResetCompleteView.as_view(),
         name="password_reset_complete",
     ),
 

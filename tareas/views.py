@@ -12,7 +12,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.urls import reverse_lazy
 
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import login
@@ -50,7 +50,18 @@ class MiLoginView(LoginView):
         if self.last_login == None:
             return reverse_lazy('password')
         return reverse_lazy('home')
+
+class MiPasswordResetView(PasswordResetView):
+    template_name = 'tareas/password_reset_form.html'
+
+class MiPasswordResetDoneView(PasswordResetDoneView):
+    template_name = 'tareas/password_reset_done.html'
     
+class MiPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'tareas/password_reset_confirm.html'
+
+class MiPasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = 'tareas/password_reset_complete.html'
 
 class Registrarse(FormView):
     template_name = 'tareas/registrarse.html'
