@@ -131,6 +131,7 @@ def get_preventas(request):
                     try:
                         nueva_preventa = Preventa.objects.get(preventa = pv['boleto'])    
                         nueva_preventa.preventa = pv['preventa']
+                        nueva_preventa.completo = False
                         boletos_a_preventas.append(nueva_preventa.preventa)
                         nueva_preventa.save()
                     except:
