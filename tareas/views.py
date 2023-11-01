@@ -124,7 +124,7 @@ class CrearTarea(LoginRequiredMixin, CreateView):
     
 class ActualizarTarea(LoginRequiredMixin, UpdateView):
     model = Tareas
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('tareas')
     context_object_name = 'tarea'
     fields = '__all__'
     
