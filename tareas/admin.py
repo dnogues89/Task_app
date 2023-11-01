@@ -34,7 +34,7 @@ class TareasAdmin(admin.ModelAdmin):
             return obj.pv.vendedor
         except:
             try:
-                return Preventa.objects.get(user = obj.user).vendedor
+                return Preventa.objects.filter(user = obj.user)[0].vendedor
             except:
                 return '-'
 
@@ -43,7 +43,7 @@ class TareasAdmin(admin.ModelAdmin):
             return obj.pv.vendedor.sucursal
         except:
             try:
-                return Preventa.objects.get(user = obj.user).vendedor.sucursal
+                return Preventa.objects.filter(user = obj.user)[0].vendedor.sucursal
             except:
                 return '-'
 
