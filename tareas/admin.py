@@ -33,13 +33,19 @@ class TareasAdmin(admin.ModelAdmin):
         try:
             return obj.pv.vendedor
         except:
-            return '-'
+            try:
+                return Preventa.objects.get(user = obj.user).vendedor
+            except:
+                return '-'
 
     def sucursal(self,obj):
         try:
             return obj.pv.vendedor.sucursal
         except:
-            return '-'
+            try:
+                return Preventa.objects.get(user = obj.user).vendedor.sucursal
+            except:
+                return '-'
 
 
     def fecha(self,obj):
