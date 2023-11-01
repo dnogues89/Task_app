@@ -1,3 +1,4 @@
+
 from typing import Any
 from django.contrib import admin
 from django.db.models.query import QuerySet
@@ -78,9 +79,12 @@ class TipoDocAdmin(admin.ModelAdmin):
 class PreventaAdmin(admin.ModelAdmin):
     list_display = ('preventa','user_name','creado','modelo','vendedor','tareas_de_usuario_crm','pendientes', 'completo')
     date_hierarchy = 'fecha_inicio'
-    search_fields = ['preventa','user__first_name','vendedor','tareas_de_usuario_crm','completo']
+    search_fields = ['preventa']
     list_filter = ['vendedor','vendedor__sucursal']
     exclude = ['completo','tareas_de_usuario_crm','fecha_inicio','vendedor','contado','user']
+    
+
+
     
     def creado(self,obj):
         return obj.fecha_inicio.strftime("%d/%m/%y") 
