@@ -18,7 +18,7 @@ def check_preventa_completa(instance):
     if Tareas.objects.filter(pv=instance.pv, completo=False).count()==0:
         preventa = Preventa.objects.get(preventa=instance.pv)
         print(f'{preventa.retira_unidad != ""} - {preventa.socios != ""} - {preventa.cedulas_azules != None} - {preventa.estado_civil} - {preventa.retira_unidad}')
-        if preventa.retira_unidad != "" and preventa.cedulas_azules != None and preventa.estado_civil != None and preventa.retira_unidad != None:
+        if preventa.retira_unidad != "" and preventa.estado_civil != None and preventa.retira_unidad != None:
             preventa.completo = True
             preventa.save()
         
@@ -199,6 +199,9 @@ class Tareas(models.Model):
         else:
             self.adjunto.delete()
             super().delete(using=using, keep_parents=keep_parents)
+        if self.pk is not None:
+            tarea = Tareas.objects.get(pk=self.pk)
+            check_preventa_completa(tarea)
 
     
     class Meta:
