@@ -183,6 +183,7 @@ class Tareas(models.Model):
                     _,ext = os.path.splitext(os.path.basename(self.adjunto.name))
                     self.adjunto.name = f'{self.titulo}{ext}'
                     self.completo = True
+                    self.carga_crm = False
         except:
             pass    
         # Guardar la instancia del modelo con el nuevo archivo adjunto.
