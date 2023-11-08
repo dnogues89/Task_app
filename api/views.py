@@ -168,13 +168,7 @@ def enviar_tareas():
     return {'errores':errores,'ok':ok}
 
 def tarea_to_json(tarea,tipo):
-    try:
-        if tarea.pv.preventa.split('-')[0] == "BE":
-            tipo='referencia'
-        else:
-            tipo='preventa'
-    except:
-        tipo='referencia'
+    tipo = 'referencia'
     mi_dict={}
     try:
         mi_dict[tipo] = tarea.pv.preventa
