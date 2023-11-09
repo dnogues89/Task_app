@@ -4,6 +4,31 @@ from django.db import models
 from django import forms
 from django.contrib.auth.models import User
 
+import requests
+import json
+
+from api.key_espasa_api import espasa_key
+
+def delete_file(tarea):
+    tarea_json = {
+        'idAdjunto' :tarea.crm_id,
+        'referencia':tarea.pv.preventa,
+    }
+    tarea.carga_crm = False
+    tarea.save()    
+    
+    url = f'https://gvcrmweb.backoffice.com.ar/apicrmespasa/v1/ventaokm/eliminarAdjuntoPreventa'
+    headers = {"apiKey": espasa_key, 'Content-Type': 'application/json'}
+    
+    json_data = json.dumps(tarea_json)
+    response = requests.post(url, data=json_data, headers=headers)
+    
+    if response.status_code == 200:
+        return True, response.json()
+    else:
+        return False, response.json()
+    
+
 
 def crear_tarea(usuario,preventa,tipo):
     tipo_tarea = TipoTarea.objects.get(tipo=tipo)
@@ -183,7 +208,11 @@ class Tareas(models.Model):
                     _,ext = os.path.splitext(os.path.basename(self.adjunto.name))
                     self.adjunto.name = f'{self.titulo}{ext}'
                     self.completo = True
-                    self.carga_crm = False
+                    if self.carga_crm:
+                        try:
+                            delete_file(self)
+                        except:
+                            self.carga_crm = False
         except:
             pass    
         # Guardar la instancia del modelo con el nuevo archivo adjunto.
