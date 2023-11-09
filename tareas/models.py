@@ -15,7 +15,8 @@ def delete_file(tarea):
         'referencia':tarea.pv.preventa,
     }
     tarea.carga_crm = False
-    tarea.save()    
+    tarea.save()
+    
     
     url = f'https://gvcrmweb.backoffice.com.ar/apicrmespasa/v1/ventaokm/eliminarAdjuntoPreventa'
     headers = {"apiKey": espasa_key, 'Content-Type': 'application/json'}

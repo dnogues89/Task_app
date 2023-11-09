@@ -20,7 +20,7 @@ class TareasAdmin(admin.ModelAdmin):
     list_filter = ['pv__vendedor','pv__vendedor__sucursal__sucursal','completo','carga_crm',]
     search_fields = ['pv__preventa','user__username','user__first_name']
     date_hierarchy = 'creado'
-    exclude = ['crm_id','carga_crm','tipo_doc','pv','tipo_tarea','creado','descarga','completo','user']
+    # exclude = ['crm_id','carga_crm','tipo_doc','pv','tipo_tarea','creado','descarga','completo','user']
 
     def pv_link(self, obj):
         if obj.pv:
