@@ -6,10 +6,10 @@ import os
 
 def reducir_peso_imagen(imagen_path, max_peso_mb):
     imagen = Image.open(imagen_path)
-    calidad = 85  # Puedes ajustar esto según tus necesidades
+    calidad = 50  # Puedes ajustar esto según tus necesidades
     imagen.save(imagen_path, quality=calidad)
 
-    peso_actual_mb = os.path.getsize(imagen_path) / (600 * 600)
+    peso_actual_mb = os.path.getsize(imagen_path) / (400 * 400)
 
     if peso_actual_mb > max_peso_mb:
         reducir_factor = max_peso_mb / peso_actual_mb
