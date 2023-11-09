@@ -4,10 +4,16 @@ from django.db import models
 from django import forms
 from django.contrib.auth.models import User
 
+from pdfs.models import ConvertPDF
+
+from django.conf import settings
+
 import requests
 import json
 
 from api.key_espasa_api import espasa_key
+from shutil import move
+
 
 def delete_file(tarea):
     tarea_json = {
@@ -52,6 +58,7 @@ def save_path(instance,filename):
     if instance.pv is not None or instance.pv != '':
         return f'user_{instance.user.id}/{instance.pv_id}/{filename.replace("|","")}'
     return f'user_{instance.user.id}/{filename}'
+
 
 
 # Create your models here.
@@ -190,11 +197,19 @@ class Tareas(models.Model):
     tipo_doc = models.ForeignKey(TipoDoc, null=True, blank=True, on_delete=models.SET_NULL)
     carga_crm = models.BooleanField(default=False)
     crm_id = models.CharField(max_length=100, blank=True, null=True)
+    convertir_pdf = models.ForeignKey(ConvertPDF,on_delete=models.SET_NULL, null=True,blank=True)
     
     def __str__(self) -> str:
         return self.titulo
     
     def save(self, *args, **kwargs):
+        borrar_pdf = False
+
+        if self.convertir_pdf !=None:
+            borrar_pdf = True
+            self.adjunto = self.convertir_pdf.pdf.file
+
+
         try:
             # Verificar si se está modificando una instancia existente.
             if self.pk is not None:
@@ -221,6 +236,11 @@ class Tareas(models.Model):
         if self.pk is not None:
             tarea = Tareas.objects.get(pk=self.pk)
             check_preventa_completa(tarea)
+        if borrar_pdf:
+            try:
+                self.convertir_pdf.delete()
+            except:
+                pass
 
 
     

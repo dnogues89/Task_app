@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'pagos',
     'api',
     'notificaciones',
+    'pdfs',
 
 ]
 
