@@ -22,7 +22,7 @@ def delete_file(tarea):
     headers = {"apiKey": espasa_key, 'Content-Type': 'application/json'}
     
     json_data = json.dumps(tarea_json)
-    response = requests.post(url, data=json_data, headers=headers)
+    response = requests.delete(url, data=json_data, headers=headers)
     
     if response.status_code == 200:
         return True, response.json()
