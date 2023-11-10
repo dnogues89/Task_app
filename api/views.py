@@ -220,6 +220,14 @@ def eliminar_crm(request, pk):
             'idAdjunto' :tarea.crm_id,
             'referencia':tarea.pv.preventa,
         }
+        #version
+        try:
+            v = tarea.titulo.split('-')[-1]
+            v=int(v)
+        except:
+            v=0
+        tarea.titulo = f'{tarea.titulo} V-{v+1}'
+            
         tarea.carga_crm = False
         tarea.adjunto.delete(save=False)
         tarea.completo = False

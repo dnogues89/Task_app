@@ -234,8 +234,9 @@ class Tareas(models.Model):
                     if self.carga_crm:
                         try:
                             delete_file(self)
-                        except:
                             self.carga_crm = False
+                        except:
+                            pass
         except:
             pass    
         # Guardar la instancia del modelo con el nuevo archivo adjunto.
