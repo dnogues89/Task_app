@@ -14,6 +14,8 @@ from .key_espasa_api import espasa_key
 
 import json
 
+from django.shortcuts import redirect
+
 #Evitar duplicidad
 import threading
 
@@ -231,9 +233,11 @@ def eliminar_crm(request, pk):
         response = requests.delete(url, data=json_data, headers=headers)
         
         if response.status_code == 200:
-            return JsonResponse(response.json())
+            # Redirige a la página de administración desde la que provino la solicitud
+            admin_url = request.META.get('HTTP_REFERER', '/admin/')
+            return redirect(admin_url)
         else:
             return JsonResponse(response.json())
-    except:
-        return JsonResponse({'error':'No se pudo Eliminar'})
+    except Exception as e:
+        return JsonResponse({'error': f'No se pudo Eliminar. Detalles del error: {str(e)}'})
     
