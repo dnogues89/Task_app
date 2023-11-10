@@ -211,5 +211,29 @@ def post_crm(data):
         return False, response.json()
     
 
-    
+def eliminar_crm(request, pk):
+    try:
+        tarea = Tareas.objects.get(pk = pk)
+        tarea_json = {
+            'idAdjunto' :tarea.crm_id,
+            'referencia':tarea.pv.preventa,
+        }
+        tarea.carga_crm = False
+        tarea.adjunto.delete(save=False)
+        tarea.completo = False
+        tarea.save()
+        
+        
+        url = f'https://gvcrmweb.backoffice.com.ar/apicrmespasa/v1/ventaokm/eliminarAdjuntoPreventa'
+        headers = {"apiKey": espasa_key, 'Content-Type': 'application/json'}
+        
+        json_data = json.dumps(tarea_json)
+        response = requests.delete(url, data=json_data, headers=headers)
+        
+        if response.status_code == 200:
+            return JsonResponse(response.json())
+        else:
+            return JsonResponse(response.json())
+    except:
+        return JsonResponse({'error':'No se pudo Eliminar'})
     

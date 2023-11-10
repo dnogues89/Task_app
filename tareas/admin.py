@@ -15,12 +15,20 @@ class AsignacionTareasAdmin(admin.ModelAdmin):
     autocomplete_fields = ('tipo_doc',)  # Esta línea habilita el autocompletado
 
 class TareasAdmin(admin.ModelAdmin):
-    list_display = ('titulo','pv_link','user_name','vendedor','sucursal','fecha','completo','carga_crm')
+    list_display = ('titulo','pv_link','user_name','vendedor','sucursal','fecha','completo','carga_crm','eliminar_crm')
     ordering = ['creado','completo','carga_crm']
     list_filter = ['pv__vendedor','pv__vendedor__sucursal__sucursal','completo','carga_crm',]
     search_fields = ['pv__preventa','user__username','user__first_name']
     date_hierarchy = 'creado'
     exclude = ['crm_id','carga_crm','tipo_doc','pv','tipo_tarea','creado','descarga','completo','user']
+
+    def eliminar_crm(self, obj):
+        if obj.carga_crm:
+            url = reverse('eliminar_archivo_crm', args=[obj.pk])
+            return format_html('<a href="{}">{}</a>', url, 'Eliminar CRM')
+            return 'Eliminar'
+        else:
+            return '-'
 
     def pv_link(self, obj):
         if obj.pv:

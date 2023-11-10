@@ -207,7 +207,14 @@ class Tareas(models.Model):
 
         if self.convertir_pdf !=None:
             borrar_pdf = True
-            self.adjunto = self.convertir_pdf.pdf.file
+            if self.adjunto != None:
+                self.adjunto.delete(save=False)
+                if self.carga_crm:
+                    try:
+                        delete_file(self)
+                    except:
+                        self.carga_crm = False
+                self.adjunto = self.convertir_pdf.pdf.file
 
 
         try:

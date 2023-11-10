@@ -11,6 +11,9 @@ urlpatterns = [
     # path('send_tareas/', views.enviar_tareas, name='send-tareas-crm'),
     #boletos
     # path('get_boletos', views.get_boletos, name='get-boletos')
+    
+    #Eliminar archivo del CRM
+    path('delete_crm/<str:pk>', views.eliminar_crm,name='eliminar_archivo_crm'),
 
 ]
 
