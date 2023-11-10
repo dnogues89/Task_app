@@ -15,7 +15,17 @@ from .key_espasa_api import espasa_key
 import json
 
 #Evitar duplicidad
-from django.db import transaction
+import threading
+
+# Crear un semáforo para bloquear el acceso al endpoint
+lock = threading.Lock()
+
+# Decorador para bloquear el acceso al endpoint
+def endpoint_lock(func):
+    def wrapper(*args, **kwargs):
+        with lock:
+            return func(*args, **kwargs)
+    return wrapper
 
 def app_user(data):
 
@@ -111,7 +121,7 @@ def get_boletos():
     
     return {"Cantidad": cant, 'Boletos':importados }
             
-@transaction.atomic            
+@endpoint_lock    
 def get_preventas(request):
     boletos = get_boletos() 
     desde = datetime.now().date() - timedelta(days=10)
