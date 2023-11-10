@@ -14,6 +14,9 @@ from .key_espasa_api import espasa_key
 
 import json
 
+#Evitar duplicidad
+from django.db import transaction
+
 def app_user(data):
 
     try:
@@ -108,7 +111,7 @@ def get_boletos():
     
     return {"Cantidad": cant, 'Boletos':importados }
             
-            
+@transaction.atomic            
 def get_preventas(request):
     boletos = get_boletos() 
     desde = datetime.now().date() - timedelta(days=10)
