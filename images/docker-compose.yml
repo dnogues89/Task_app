@@ -11,6 +11,8 @@ services:
       - "8000:8000"
     extra_hosts:
       - "mail.backoffice.com.ar:10.0.4.50"
+    networks:
+      - espasa-network
 
   nginx-espasa:
     container_name: nginx-espasa
@@ -22,3 +24,9 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - espasa-app
+    networks:
+      - espasa-network
+
+networks:
+  espasa-network:
+    driver: bridge
